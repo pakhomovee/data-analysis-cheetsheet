@@ -1,34 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Data Analysis Cheatsheet</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+<title>Data Analysis Exam Cheatsheet + Lecture Core</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark-dimmed.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/contrib/auto-render.min.js"
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
 <style>
   :root {
     /* ── section accent colors ── */
+    --math:    #4f46e5;   /* indigo */
+    --stats:   #16a34a;   /* green */
+    --theory:  #be123c;   /* rose */
     --numpy:   #0d9488;   /* teal */
     --pandas:  #2563eb;   /* blue */
     --polars:  #7c3aed;   /* violet */
     --sklearn: #c2410c;   /* terracotta */
 
     /* ── pastel dot / border / badge colors ── */
+    --math-dot:     #a5b4fc;
+    --stats-dot:    #86efac;
+    --theory-dot:   #fda4af;
     --numpy-dot:    #5eead4;
     --pandas-dot:   #93c5fd;
     --polars-dot:   #c4b5fd;
     --sklearn-dot:  #fb923c;
 
+    --math-border:   #c7d2fe;
+    --stats-border:  #bbf7d0;
+    --theory-border: #fecdd3;
     --numpy-border:  #99f6e4;
     --pandas-border: #bfdbfe;
     --polars-border: #ddd6fe;
     --sklearn-border:#fed7aa;
 
+    --math-bg:    #eef2ff;
+    --stats-bg:   #f0fdf4;
+    --theory-bg:  #fff1f2;
     --numpy-bg:   #f0fdfa;
     --pandas-bg:  #eff6ff;
     --polars-bg:  #f5f3ff;
@@ -83,6 +95,9 @@
     color: #a08060;
   }
   .nav-group-header .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .nav-group-header.math .dot    { background: var(--math-dot); }
+  .nav-group-header.stats .dot   { background: var(--stats-dot); }
+  .nav-group-header.theory .dot  { background: var(--theory-dot); }
   .nav-group-header.numpy .dot   { background: var(--numpy-dot); }
   .nav-group-header.pandas .dot  { background: var(--pandas-dot); }
   .nav-group-header.polars .dot  { background: var(--polars-dot); }
@@ -113,11 +128,17 @@
     margin-top: .1rem;
   }
 
+  .math-color    { color: var(--math); }
+  .stats-color   { color: var(--stats); }
+  .theory-color  { color: var(--theory); }
   .numpy-color   { color: var(--numpy); }
   .pandas-color  { color: var(--pandas); }
   .polars-color  { color: var(--polars); }
   .sklearn-color { color: var(--sklearn); }
 
+  .math-badge    { background: var(--math-bg);    color: var(--math);    border: 1px solid var(--math-border); }
+  .stats-badge   { background: var(--stats-bg);   color: var(--stats);   border: 1px solid var(--stats-border); }
+  .theory-badge  { background: var(--theory-bg);  color: var(--theory);  border: 1px solid var(--theory-border); }
   .numpy-badge   { background: var(--numpy-bg);   color: var(--numpy);   border: 1px solid var(--numpy-border); }
   .pandas-badge  { background: var(--pandas-bg);  color: var(--pandas);  border: 1px solid var(--pandas-border); }
   .polars-badge  { background: var(--polars-bg);  color: var(--polars);  border: 1px solid var(--polars-border); }
@@ -130,6 +151,9 @@
     box-shadow: 0 1px 3px rgba(28,14,0,.06), 0 0 0 1px rgba(28,14,0,.04);
     border-left: 4px solid transparent;
   }
+  .card.math    { border-left-color: var(--math-border); }
+  .card.stats   { border-left-color: var(--stats-border); }
+  .card.theory  { border-left-color: var(--theory-border); }
   .card.numpy   { border-left-color: var(--numpy-border); }
   .card.pandas  { border-left-color: var(--pandas-border); }
   .card.polars  { border-left-color: var(--polars-border); }
@@ -176,6 +200,18 @@
   .tag-reg { background: #d1fae5; color: #065f46; }
   .tag-clu { background: #ede9fe; color: #4c1d95; }
 
+  .quick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(245px, 1fr)); gap: .85rem; margin-top: .75rem; }
+  .quick-card {
+    background: #fdf8f2; border: 1px solid var(--border); border-radius: 8px;
+    padding: .85rem .95rem;
+  }
+  .quick-card h4 { margin-top: 0; }
+  .quick-card p, .quick-card li { font-size: .8rem; line-height: 1.55; }
+  .note {
+    background: #fffaf2; border: 1px solid #ead8be; border-radius: 7px;
+    padding: .75rem .9rem; margin: .7rem 0; color: #4a3520; font-size: .85rem;
+  }
+
   /* ─── Scoring table ─── */
   .scoring-table { width: 100%; border-collapse: collapse; font-size: .81rem; margin-top: .65rem; }
   .scoring-table th { background: #2e1f10; color: #f5ede0; padding: .42rem .75rem; text-align: left; }
@@ -199,7 +235,55 @@
 
 <!-- ══════════════════ SIDEBAR ══════════════════ -->
 <nav id="sidebar">
-  <div class="sidebar-title">Data Analysis Cheatsheet</div>
+  <div class="sidebar-title">Data Analysis Cheatsheet + Lectures</div>
+
+  <div class="nav-group">
+    <div class="nav-group-header math"><span class="dot"></span>Math</div>
+    <div class="nav-items">
+      <a href="#math-probability">Probability</a>
+      <a href="#math-linear-algebra">Linear Algebra</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-header stats"><span class="dot"></span>Statistics</div>
+    <div class="nav-items">
+      <a href="#stats-basics">Data &amp; Variables</a>
+      <a href="#stats-distributions">Distributions</a>
+      <a href="#stats-visualization">Visualization Choice</a>
+      <a href="#stats-hypothesis">Hypotheses &amp; Correlation</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-header theory"><span class="dot"></span>ML Theory</div>
+    <div class="nav-items">
+      <a href="#ml-task-map">Task Types</a>
+      <a href="#ml-losses">Losses &amp; Metrics</a>
+      <a href="#ml-overfit">Overfitting</a>
+      <a href="#ml-gradient">Gradient Descent</a>
+      <a href="#ml-ensembles">Trees &amp; Ensembles</a>
+      <a href="#ml-text-image">Text &amp; Images</a>
+      <a href="#ml-deep-learning">Deep Learning</a>
+    </div>
+  </div>
+
+
+  <div class="nav-group">
+    <div class="nav-group-header theory"><span class="dot"></span>Lecture Core</div>
+    <div class="nav-items">
+      <a href="#lec-ml-pipeline">ML Setup &amp; Pipeline</a>
+      <a href="#lec-linreg-deep">Linear Regression Deep Dive</a>
+      <a href="#lec-optim-reg">Optimisation &amp; Regularisation</a>
+      <a href="#lec-linclass-svm">Linear Classification &amp; SVM</a>
+      <a href="#lec-ranking-metrics">Ranking Metrics</a>
+      <a href="#lec-knn-distances">KNN &amp; Distances</a>
+      <a href="#lec-tree-theory">Decision Tree Theory</a>
+      <a href="#lec-bagging-rf">Bagging &amp; Random Forest</a>
+      <a href="#lec-gb-xgb">Boosting, XGBoost &amp; Stacking</a>
+      <a href="#lec-exam-traps">Exam Traps</a>
+    </div>
+  </div>
 
   <div class="nav-group">
     <div class="nav-group-header numpy"><span class="dot"></span>NumPy</div>
@@ -218,6 +302,7 @@
       <a href="#pd-csv">Loading CSV</a>
       <a href="#pd-columns">Column Operations</a>
       <a href="#pd-filter">Filtering</a>
+      <a href="#pd-agg">Aggregation &amp; Correlation</a>
       <a href="#pd-nan">Handling NaNs</a>
       <a href="#pd-dropc">Drop &amp; Concat</a>
       <a href="#pd-dtypes">Numeric/Categorical Cols</a>
@@ -249,6 +334,9 @@
       <a href="#sk-pca">PCA</a>
       <a href="#sk-svc">SVC</a>
       <a href="#sk-knn">KNN</a>
+      <a href="#sk-tree">Decision Tree</a>
+      <a href="#sk-forest">Random Forest</a>
+      <a href="#sk-gb">Gradient Boosting</a>
     </div>
   </div>
 
@@ -263,6 +351,7 @@
       <a href="#sk-ohe">One-Hot Encoding</a>
       <a href="#sk-impute">Imputing</a>
       <a href="#sk-poly">Polynomial Features</a>
+      <a href="#sk-pipeline-full">Full Pipeline</a>
     </div>
   </div>
 
@@ -287,6 +376,850 @@
 
 <!-- ══════════════════ MAIN CONTENT ══════════════════ -->
 <main id="main">
+
+<!-- ━━━━━━━━━━━━━━━━ MATH FOUNDATIONS ━━━━━━━━━━━━━━━━ -->
+<section class="section" id="math-foundations">
+  <div class="section-title">
+    <span class="math-color">Math Foundations</span>
+    <span class="badge math-badge">probability + linear algebra</span>
+  </div>
+
+  <div class="card math anchor" id="math-probability">
+    <h3>Probability Essentials</h3>
+    <p>Главные формулы для задач A-3 и B-5: условная вероятность, полная вероятность, Байес, включения-исключения, ожидание и дисперсия.</p>
+    <div class="formula-box">
+      <p>$P(A|B)=\dfrac{P(A \cap B)}{P(B)}$</p>
+      <p>$P(A \cap B)=P(A|B)P(B)=P(B|A)P(A)$</p>
+      <p>$P(A \cup B)=P(A)+P(B)-P(A \cap B)$</p>
+      <p>$P(A \cup B \cup C)=\sum P(A_i)-\sum P(A_i \cap A_j)+P(A \cap B \cap C)$</p>
+    </div>
+    <table class="params">
+      <tr><th>Concept</th><th>Formula / meaning</th><th>Exam cue</th></tr>
+      <tr><td>Independence</td><td>$P(A \cap B)=P(A)P(B)$</td><td>One event does not change probability of the other.</td></tr>
+      <tr><td>Mutually exclusive</td><td>$P(A \cap B)=0$</td><td>Cannot happen together. Not the same as independent.</td></tr>
+      <tr><td>Total probability</td><td>$P(B)=\sum_i P(B|A_i)P(A_i)$</td><td>Break event B by scenarios/classes $A_i$.</td></tr>
+      <tr><td>Bayes</td><td>$P(A_k|B)=\dfrac{P(B|A_k)P(A_k)}{\sum_i P(B|A_i)P(A_i)}$</td><td>Invert conditional probability after evidence B.</td></tr>
+      <tr><td>Expectation</td><td>$E[X]=\sum x_i p_i$ or $\int x f(x)dx$</td><td>Long-run average.</td></tr>
+      <tr><td>Variance</td><td>$Var(X)=E[(X-E[X])^2]=E[X^2]-E[X]^2$</td><td>Spread around expectation.</td></tr>
+    </table>
+    <div class="note"><strong>Bayes checklist:</strong> prior $P(A)$, likelihood $P(B|A)$, evidence $P(B)$, posterior $P(A|B)$.</div>
+<pre><code class="language-python"># Bayes example:
+# 2% of users are fraud. Test catches fraud with P(+|fraud)=0.95
+# and has false positive rate P(+|not fraud)=0.04.
+p_fraud = 0.02
+p_not = 1 - p_fraud
+p_pos_given_fraud = 0.95
+p_pos_given_not = 0.04
+
+p_pos = p_pos_given_fraud * p_fraud + p_pos_given_not * p_not
+p_fraud_given_pos = p_pos_given_fraud * p_fraud / p_pos
+print(round(p_fraud_given_pos, 4))
+</code></pre>
+  </div>
+
+  <div class="card math anchor" id="math-linear-algebra">
+    <h3>Linear Algebra for ML</h3>
+    <p>Нужно для A-5 и B-4: векторы, матрицы, нормы, скалярное произведение, матричное умножение, ранг, собственные значения и разложения.</p>
+    <div class="formula-box">
+      <p>Linear regression prediction: $\hat{y}=Xw+b$</p>
+      <p>OLS normal equation: $w=(X^T X)^{-1}X^T y$ when $X^TX$ is invertible.</p>
+      <p>Euclidean distance: $d(x,z)=\sqrt{\sum_i (x_i-z_i)^2}$</p>
+    </div>
+<pre><code class="language-python">import numpy as np
+
+A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+x = np.array([1, 2])
+
+print(A @ B)              # matrix multiplication
+print(A @ x)              # matrix-vector product
+print(np.dot(x, x))       # dot product
+print(np.linalg.norm(x))  # Euclidean norm
+print(np.linalg.det(A))   # determinant
+print(np.linalg.matrix_rank(A))
+
+eig_values, eig_vectors = np.linalg.eig(A)
+U, S, Vt = np.linalg.svd(A)
+</code></pre>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━ STATISTICS ━━━━━━━━━━━━━━━━ -->
+<section class="section" id="statistics">
+  <div class="section-title">
+    <span class="stats-color">Statistics</span>
+    <span class="badge stats-badge">EDA + inference</span>
+  </div>
+
+  <div class="card stats anchor" id="stats-basics">
+    <h3>Data, Variables, Center, Spread</h3>
+    <p>База для статистики и анализа набора данных: тип переменной определяет, какие графики, агрегаты и модели уместны.</p>
+    <table class="params">
+      <tr><th>Topic</th><th>Key idea</th><th>Use in exam</th></tr>
+      <tr><td>Population</td><td>All objects of interest.</td><td>Usually unknown, described through a sample.</td></tr>
+      <tr><td>Sample</td><td>Observed subset of the population.</td><td>Statistics are computed on sample data.</td></tr>
+      <tr><td>Numeric</td><td>Continuous or discrete numbers.</td><td>Mean, median, variance, histograms, regression.</td></tr>
+      <tr><td>Categorical</td><td>Nominal or ordinal classes.</td><td>Counts, proportions, bar plots, encoding.</td></tr>
+      <tr><td>Mean</td><td>$\bar{x}=\frac{1}{n}\sum x_i$</td><td>Sensitive to outliers.</td></tr>
+      <tr><td>Median</td><td>Middle sorted value.</td><td>Robust center for skewed data.</td></tr>
+      <tr><td>Variance / std</td><td>$s^2=\frac{1}{n-1}\sum(x_i-\bar{x})^2$</td><td>Spread in squared units / original units.</td></tr>
+      <tr><td>IQR</td><td>$Q3-Q1$</td><td>Outlier rule: below $Q1-1.5IQR$ or above $Q3+1.5IQR$.</td></tr>
+    </table>
+<pre><code class="language-python">num = df.select_dtypes(include="number")
+cat = df.select_dtypes(exclude="number")
+
+summary = num.agg(["mean", "median", "std", "min", "max"])
+q1 = df["value"].quantile(0.25)
+q3 = df["value"].quantile(0.75)
+iqr = q3 - q1
+outliers = df[(df["value"] < q1 - 1.5 * iqr) | (df["value"] > q3 + 1.5 * iqr)]
+
+counts = df["category"].value_counts()
+proportions = df["category"].value_counts(normalize=True)
+</code></pre>
+  </div>
+
+  <div class="card stats anchor" id="stats-distributions">
+    <h3>Distributions, Density, CDF</h3>
+    <p>Для A-2 важно отличать плотность/PMF от функции распределения и понимать форму основных распределений.</p>
+    <table class="params">
+      <tr><th>Distribution</th><th>When used</th><th>Parameters / facts</th></tr>
+      <tr><td>Bernoulli</td><td>One binary trial.</td><td>$P(X=1)=p$, $E[X]=p$, $Var(X)=p(1-p)$</td></tr>
+      <tr><td>Binomial</td><td>Number of successes in n independent trials.</td><td>$X \sim Bin(n,p)$, $E[X]=np$</td></tr>
+      <tr><td>Poisson</td><td>Counts of rare events in interval.</td><td>$X \sim Pois(\lambda)$, $E[X]=Var(X)=\lambda$</td></tr>
+      <tr><td>Uniform</td><td>All values in interval equally likely.</td><td>$U(a,b)$, flat density.</td></tr>
+      <tr><td>Normal</td><td>Many natural errors and averages.</td><td>$N(\mu,\sigma^2)$, symmetric bell shape.</td></tr>
+      <tr><td>Exponential</td><td>Waiting time until event.</td><td>Memoryless continuous distribution.</td></tr>
+    </table>
+    <div class="formula-box">
+      <p>Discrete: $P(X=x)$ is probability mass.</p>
+      <p>Continuous: $P(a \le X \le b)=\int_a^b f(x)dx$, point probability is 0.</p>
+      <p>CDF: $F(x)=P(X \le x)$, non-decreasing from 0 to 1.</p>
+      <p>Standardization: $z=\dfrac{x-\mu}{\sigma}$.</p>
+    </div>
+<pre><code class="language-python">import numpy as np
+from scipy import stats
+
+x = 1.96
+print(stats.norm.cdf(x))           # P(Z <= 1.96)
+print(1 - stats.norm.cdf(x))       # right tail
+print(stats.norm.ppf(0.975))       # quantile
+
+print(stats.binom.pmf(k=3, n=10, p=0.4))
+print(stats.poisson.pmf(k=2, mu=1.5))
+</code></pre>
+  </div>
+
+  <div class="card stats anchor" id="stats-visualization">
+    <h3>Choosing and Interpreting Visualizations</h3>
+    <p>Вопросы A-1 проверяют выбор графика и интерпретацию box plot, violin plot, density plot, bubble chart и других базовых визуализаций.</p>
+    <table class="params">
+      <tr><th>Goal</th><th>Best chart</th><th>What to inspect</th></tr>
+      <tr><td>One numeric variable</td><td>Histogram, KDE/density, box plot, violin plot</td><td>Center, spread, skew, outliers, multimodality.</td></tr>
+      <tr><td>One categorical variable</td><td>Bar chart</td><td>Most/least frequent classes, imbalance.</td></tr>
+      <tr><td>Numeric vs categorical</td><td>Box plot, violin plot, grouped bar for aggregates</td><td>Group differences, outliers per category.</td></tr>
+      <tr><td>Two numeric variables</td><td>Scatter plot</td><td>Trend, clusters, nonlinear relation, outliers.</td></tr>
+      <tr><td>Three variables</td><td>Bubble chart or color/hue on scatter</td><td>Size/color encodes extra variable; avoid overplotting.</td></tr>
+      <tr><td>Time series</td><td>Line chart</td><td>Trend, seasonality, anomalies.</td></tr>
+      <tr><td>Correlation matrix</td><td>Heatmap</td><td>Strong positive/negative relationships and redundancy.</td></tr>
+    </table>
+<pre><code class="language-python">import seaborn as sns
+import matplotlib.pyplot as plt
+
+sns.histplot(df["value"], kde=True)
+sns.boxplot(data=df, x="category", y="value")
+sns.violinplot(data=df, x="category", y="value")
+sns.scatterplot(data=df, x="x", y="y", hue="group", size="amount")
+sns.heatmap(df.select_dtypes("number").corr(), annot=True, cmap="coolwarm", center=0)
+plt.show()
+</code></pre>
+  </div>
+
+  <div class="card stats anchor" id="stats-hypothesis">
+    <h3>Hypothesis Testing and Correlation</h3>
+    <p>Для A-4: знать термины проверки гипотез, типы ошибок, мощность критерия, уровень значимости и интерпретацию коэффициента корреляции.</p>
+    <table class="params">
+      <tr><th>Term</th><th>Meaning</th><th>Exam wording</th></tr>
+      <tr><td>$H_0$</td><td>Null hypothesis, default/no effect.</td><td>What we try to reject.</td></tr>
+      <tr><td>$H_1$</td><td>Alternative hypothesis.</td><td>Effect/difference exists.</td></tr>
+      <tr><td>$\alpha$</td><td>Significance level.</td><td>Allowed probability of Type I error.</td></tr>
+      <tr><td>p-value</td><td>Probability of data at least this extreme if $H_0$ is true.</td><td>If p-value &lt; alpha, reject $H_0$.</td></tr>
+      <tr><td>Type I error</td><td>Reject true $H_0$.</td><td>False positive.</td></tr>
+      <tr><td>Type II error</td><td>Do not reject false $H_0$.</td><td>False negative.</td></tr>
+      <tr><td>Power</td><td>$1-\beta$.</td><td>Probability to detect real effect.</td></tr>
+    </table>
+    <div class="formula-box">
+      <p>Pearson correlation: $r=\dfrac{cov(X,Y)}{\sigma_X\sigma_Y}$, ranges from -1 to 1.</p>
+      <p>$r \approx 1$: strong positive linear relation. $r \approx -1$: strong negative linear relation. $r \approx 0$: no linear relation, but nonlinear relation may exist.</p>
+    </div>
+<pre><code class="language-python">from scipy import stats
+
+r, p = stats.pearsonr(df["x"], df["y"])   # linear correlation
+rho, p_s = stats.spearmanr(df["x"], df["y"])  # rank/monotonic correlation
+
+# Two independent samples: means differ?
+t_stat, p_value = stats.ttest_ind(group_a, group_b, equal_var=False)
+if p_value < 0.05:
+    print("Reject H0")
+else:
+    print("Do not reject H0")
+</code></pre>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━ ML THEORY ━━━━━━━━━━━━━━━━ -->
+<section class="section" id="ml-theory">
+  <div class="section-title">
+    <span class="theory-color">ML Theory</span>
+    <span class="badge theory-badge">exam concepts</span>
+  </div>
+
+  <div class="card theory anchor" id="ml-task-map">
+    <h3>Task Types: Classification, Regression, Clustering</h3>
+    <p>Первый шаг почти любого вопроса по ML: определить тип задачи по целевой переменной и формату ответа.</p>
+    <table class="params">
+      <tr><th>Task</th><th>Target / output</th><th>Examples</th><th>Typical models</th></tr>
+      <tr><td>Binary classification</td><td>Two classes or probability of class 1.</td><td>Fraud/not fraud, churn/no churn.</td><td>Logistic regression, SVC, tree, random forest.</td></tr>
+      <tr><td>Multiclass classification</td><td>One of several classes.</td><td>Digit 0-9, species type.</td><td>Logistic regression, KNN, forest, boosting.</td></tr>
+      <tr><td>Regression</td><td>Continuous number.</td><td>Price, demand, temperature.</td><td>Linear regression, SVR, tree regressor, boosting.</td></tr>
+      <tr><td>Clustering</td><td>No target, group labels are discovered.</td><td>Customer segments, anomaly groups.</td><td>K-Means, DBSCAN, hierarchical clustering.</td></tr>
+    </table>
+    <div class="note">If there is no target column, it is unsupervised learning. If there is a target, choose classification for categories and regression for numbers.</div>
+  </div>
+
+  <div class="card theory anchor" id="ml-losses">
+    <h3>Losses and Metric Choice</h3>
+    <p>A-9, A-10 and B-1 often ask to choose or compute an error metric. Loss is optimized during training; metric is what you report and compare.</p>
+    <table class="params">
+      <tr><th>Situation</th><th>Good metric/loss</th><th>Why</th></tr>
+      <tr><td>Balanced classification</td><td>Accuracy, cross-entropy</td><td>Accuracy is understandable when classes are balanced.</td></tr>
+      <tr><td>Imbalanced classification</td><td>Precision, recall, F1, ROC-AUC, PR-AUC</td><td>Accuracy can hide minority-class failure.</td></tr>
+      <tr><td>False positives are costly</td><td>Precision</td><td>Example: flagging innocent users as fraud.</td></tr>
+      <tr><td>False negatives are costly</td><td>Recall</td><td>Example: missing a disease or fraud case.</td></tr>
+      <tr><td>Regression, robust to outliers</td><td>MAE</td><td>Linear penalty, same units as target.</td></tr>
+      <tr><td>Regression, punish large errors</td><td>MSE / RMSE</td><td>Squared penalty emphasizes large misses.</td></tr>
+      <tr><td>Explain variance</td><td>$R^2$</td><td>Compares model to predicting the mean.</td></tr>
+      <tr><td>Clustering without labels</td><td>Silhouette, Davies-Bouldin</td><td>Uses geometry of clusters.</td></tr>
+      <tr><td>Clustering with true labels</td><td>ARI, homogeneity, completeness, V-measure</td><td>Compares discovered clusters to known classes.</td></tr>
+    </table>
+  </div>
+
+  <div class="card theory anchor" id="ml-overfit">
+    <h3>Overfitting, Underfitting, Regularization</h3>
+    <p>Главная диагностика: сравнить train score и validation/test score. Большой разрыв почти всегда указывает на переобучение.</p>
+    <table class="params">
+      <tr><th>Pattern</th><th>Diagnosis</th><th>Fix</th></tr>
+      <tr><td>Train low, validation low</td><td>Underfitting / high bias.</td><td>More complex model, better features, less regularization.</td></tr>
+      <tr><td>Train high, validation low</td><td>Overfitting / high variance.</td><td>More data, regularization, simpler model, pruning, CV, early stopping.</td></tr>
+      <tr><td>Train high, validation high</td><td>Good generalization.</td><td>Use test set once for final estimate.</td></tr>
+    </table>
+    <div class="formula-box">
+      <p>Bias-variance decomposition idea: expected error = noise + bias$^2$ + variance.</p>
+      <p>L2/Ridge adds $\lambda\sum w_j^2$ and shrinks weights smoothly. L1/Lasso adds $\lambda\sum |w_j|$ and can make weights exactly zero.</p>
+    </div>
+<pre><code class="language-python">from sklearn.model_selection import learning_curve
+
+train_sizes, train_scores, val_scores = learning_curve(
+    estimator=pipe,
+    X=X,
+    y=y,
+    cv=5,
+    scoring="accuracy",
+    train_sizes=[0.2, 0.4, 0.6, 0.8, 1.0]
+)
+
+print(train_scores.mean(axis=1))
+print(val_scores.mean(axis=1))
+</code></pre>
+  </div>
+
+  <div class="card theory anchor" id="ml-gradient">
+    <h3>Linear Models and Gradient Descent</h3>
+    <p>Для A-11 и B-2: понимать, что линейная модель считает взвешенную сумму признаков, а градиентный спуск итеративно уменьшает функцию потерь.</p>
+    <div class="formula-box">
+      <p>Linear model: $\hat{y}=w_0+w_1x_1+\dots+w_px_p$</p>
+      <p>Gradient descent update: $w := w-\eta \nabla_w L(w)$</p>
+      <p>$\eta$ is learning rate. Too small: slow. Too large: divergence or oscillation.</p>
+    </div>
+    <table class="params">
+      <tr><th>Variant</th><th>Update uses</th><th>Trade-off</th></tr>
+      <tr><td>Batch GD</td><td>All training data.</td><td>Stable but slow on large data.</td></tr>
+      <tr><td>Stochastic GD</td><td>One sample.</td><td>Noisy but fast updates.</td></tr>
+      <tr><td>Mini-batch GD</td><td>Small batch.</td><td>Standard compromise for neural networks.</td></tr>
+    </table>
+<pre><code class="language-python">import numpy as np
+
+# Manual gradient descent for simple linear regression y = w*x + b
+x = np.array([1, 2, 3, 4], dtype=float)
+y = np.array([2, 4, 6, 8], dtype=float)
+w, b = 0.0, 0.0
+lr = 0.01
+
+for _ in range(1000):
+    y_pred = w * x + b
+    error = y_pred - y
+    grad_w = 2 * np.mean(error * x)
+    grad_b = 2 * np.mean(error)
+    w -= lr * grad_w
+    b -= lr * grad_b
+
+print(w, b)
+</code></pre>
+  </div>
+
+  <div class="card theory anchor" id="ml-ensembles">
+    <h3>Trees, Ensembles, Bias-Variance</h3>
+    <p>Для A-12, A-13 и B-3: деревья дают нелинейные правила, ансамбли объединяют много моделей, чтобы снизить variance или bias.</p>
+    <table class="params">
+      <tr><th>Algorithm</th><th>Core idea</th><th>Strength</th><th>Risk</th></tr>
+      <tr><td>Decision Tree</td><td>Recursive feature splits.</td><td>Interpretable, nonlinear, handles mixed feature scales.</td><td>Overfits deep trees.</td></tr>
+      <tr><td>Bagging</td><td>Train models on bootstrap samples and average/vote.</td><td>Reduces variance.</td><td>Less interpretable.</td></tr>
+      <tr><td>Random Forest</td><td>Bagging of trees plus random feature subsets.</td><td>Strong baseline, robust.</td><td>Can be large and slower.</td></tr>
+      <tr><td>Boosting</td><td>Sequentially correct previous errors.</td><td>Reduces bias, high quality.</td><td>Sensitive to learning rate and overfitting.</td></tr>
+    </table>
+    <div class="formula-box">
+      <p>Gini impurity: $G=1-\sum_k p_k^2$</p>
+      <p>Entropy: $H=-\sum_k p_k \log_2 p_k$</p>
+      <p>Information gain: impurity before split - weighted impurity after split.</p>
+    </div>
+  </div>
+
+  <div class="card theory anchor" id="ml-text-image">
+    <h3>Text and Image Basics</h3>
+    <p>Для A-8: знать базовые операции с текстом и изображениями, а также частотные признаки слов.</p>
+    <div class="quick-grid">
+      <div class="quick-card">
+        <h4>Text preprocessing</h4>
+        <ul>
+          <li>Cleaning: lowercasing, punctuation removal, stopword removal.</li>
+          <li>Tokenization: split text into words/subwords.</li>
+          <li>Stemming: crude suffix cutting, often language-specific.</li>
+          <li>Lemmatization: convert word to dictionary form.</li>
+        </ul>
+      </div>
+      <div class="quick-card">
+        <h4>Text features</h4>
+        <ul>
+          <li>Bag of Words: counts of tokens, ignores order.</li>
+          <li>TF: term frequency inside a document.</li>
+          <li>IDF: downweights words common in many documents.</li>
+          <li>TF-IDF = TF * IDF, useful for classic ML models.</li>
+        </ul>
+      </div>
+      <div class="quick-card">
+        <h4>Images</h4>
+        <ul>
+          <li>Grayscale image shape: height x width.</li>
+          <li>RGB image shape: height x width x 3.</li>
+          <li>Normalize pixels from 0-255 to 0-1 or standardize channels.</li>
+          <li>Flattening loses spatial structure; CNNs preserve local patterns.</li>
+        </ul>
+      </div>
+    </div>
+<pre><code class="language-python">from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+
+texts = ["Data analysis is fun", "Data science uses analysis"]
+
+bow = CountVectorizer(lowercase=True)
+X_bow = bow.fit_transform(texts)
+print(bow.get_feature_names_out())
+print(X_bow.toarray())
+
+tfidf = TfidfVectorizer(lowercase=True, ngram_range=(1, 2))
+X_tfidf = tfidf.fit_transform(texts)
+</code></pre>
+<pre><code class="language-python">import numpy as np
+
+img = np.random.randint(0, 256, size=(64, 64, 3), dtype=np.uint8)
+img_float = img.astype("float32") / 255.0
+flat = img_float.reshape(-1)  # 64*64*3 features for classic ML
+</code></pre>
+  </div>
+
+  <div class="card theory anchor" id="ml-deep-learning">
+    <h3>Deep Learning: Layers and Activations</h3>
+    <p>Для A-15: понимать, какие слои и функции активации используются и какие свойства они имеют.</p>
+    <table class="params">
+      <tr><th>Layer / activation</th><th>Purpose</th><th>Key property</th></tr>
+      <tr><td>Dense / Linear</td><td>Fully connected transformation.</td><td>Computes $Wx+b$.</td></tr>
+      <tr><td>Convolution</td><td>Local pattern extraction from images/signals.</td><td>Shared filters reduce parameters.</td></tr>
+      <tr><td>Pooling</td><td>Downsampling feature maps.</td><td>Max/average pooling adds local invariance.</td></tr>
+      <tr><td>Dropout</td><td>Regularization.</td><td>Randomly disables units during training.</td></tr>
+      <tr><td>BatchNorm</td><td>Stabilizes activations.</td><td>Often speeds training.</td></tr>
+      <tr><td>Sigmoid</td><td>Binary probability output.</td><td>Range (0,1), can saturate.</td></tr>
+      <tr><td>Tanh</td><td>Centered nonlinear activation.</td><td>Range (-1,1), can saturate.</td></tr>
+      <tr><td>ReLU</td><td>Default hidden activation.</td><td>$max(0,x)$, sparse, simple.</td></tr>
+      <tr><td>Softmax</td><td>Multiclass probabilities.</td><td>Outputs sum to 1.</td></tr>
+    </table>
+    <div class="note">For binary classification use sigmoid + binary cross-entropy. For multiclass use softmax + categorical/cross-entropy. For regression usually use linear output + MSE/MAE.</div>
+  </div>
+</section>
+
+
+<!-- ━━━━━━━━━━━━━━━━ LECTURE CORE ADDITIONS ━━━━━━━━━━━━━━━━ -->
+<section class="section" id="lecture-core">
+  <div class="section-title">
+    <span class="theory-color">Lecture Core Additions</span>
+    <span class="badge theory-badge">what can be asked</span>
+  </div>
+
+  <div class="card theory">
+    <h3>Что добавлено из лекций 01-10</h3>
+    <p>Этот блок закрывает теоретические детали, которые часто спрашивают в коротких вопросах и задачах: постановка ML-задачи, линейные модели, регуляризация, margin/losses, kNN, деревья, случайные леса, бустинг, XGBoost и стекинг.</p>
+    <div class="note"><strong>Как пользоваться:</strong> перед экзаменом пробеги таблицы “Exam cue” и “Trap”. Если формула дана рядом с интерпретацией, обычно спрашивают не только вычисление, но и смысл.</div>
+  </div>
+
+  <div class="card theory anchor" id="lec-ml-pipeline">
+    <h3>ML Setup &amp; Data-Analysis Pipeline</h3>
+    <p>Формальная постановка: есть пространство объектов $X$, пространство ответов $Y$, обучающая выборка $\mathcal{D}=\{(x_i,y_i)\}_{i=1}^{\ell}$ и модель $a:X\to Y$. Таблица “объекты-признаки” имеет размер $\ell \times d$: строки — объекты, столбцы — признаки.</p>
+    <div class="formula-box">
+      <p>Empirical risk / average loss: $Q(a,\mathcal{D})=\dfrac{1}{\ell}\sum_{i=1}^{\ell}L(y_i,a(x_i))$</p>
+      <p>Regression with MSE: $Q(a,\mathcal{D})=\dfrac{1}{\ell}\sum_{i=1}^{\ell}(a(x_i)-y_i)^2$</p>
+    </div>
+    <table class="params">
+      <tr><th>Concept</th><th>Meaning</th><th>Exam cue</th></tr>
+      <tr><td>Object</td><td>Entity we predict for: client, text, image, restaurant location.</td><td>Usually becomes a row in a table.</td></tr>
+      <tr><td>Feature</td><td>Measurable description of an object.</td><td>Can be numeric, binary, categorical, ordinal, set-valued, text/image-derived.</td></tr>
+      <tr><td>Target</td><td>Known answer $y_i$ during supervised learning.</td><td>Numeric target → regression; categorical target → classification.</td></tr>
+      <tr><td>Feature engineering</td><td>Creating useful features before modelling.</td><td>Often more important than model choice.</td></tr>
+      <tr><td>Loss</td><td>Error on one object.</td><td>Example: $(y-\hat y)^2$.</td></tr>
+      <tr><td>Quality functional</td><td>Aggregate quality over a dataset.</td><td>Usually sum/mean of losses.</td></tr>
+    </table>
+    <h4>Core task types from the lectures</h4>
+    <table class="params">
+      <tr><th>Type</th><th>Answer space</th><th>Example</th></tr>
+      <tr><td>Regression</td><td>$Y=\mathbb{R}$</td><td>Predict profit, price, demand.</td></tr>
+      <tr><td>Binary classification</td><td>$Y=\{0,1\}$ or $\{-1,+1\}$</td><td>Click/no click, default/no default.</td></tr>
+      <tr><td>Multiclass classification</td><td>$Y=\{1,\dots,K\}$</td><td>Topic or digit class.</td></tr>
+      <tr><td>Multilabel classification</td><td>$Y=\{0,1\}^K$</td><td>Several tags for one object.</td></tr>
+      <tr><td>Semi-supervised</td><td>Some objects have labels, others do not.</td><td>Useful when labeling is expensive.</td></tr>
+      <tr><td>Clustering</td><td>No target.</td><td>Group documents or customers.</td></tr>
+      <tr><td>Density estimation</td><td>Estimate distribution of objects.</td><td>Anomaly detection: low-probability objects are suspicious.</td></tr>
+      <tr><td>Dimensionality reduction / visualization</td><td>New low-dimensional features.</td><td>Compress, visualize, or build latent factors.</td></tr>
+    </table>
+    <h4>Canonical project pipeline</h4>
+    <table class="params">
+      <tr><th>Step</th><th>What to do</th><th>Typical mistake</th></tr>
+      <tr><td>1. Problem</td><td>Define target and business/metric goal.</td><td>Optimizing a metric that does not match the task.</td></tr>
+      <tr><td>2. Features</td><td>Create informative object descriptions.</td><td>Leaking target information into features.</td></tr>
+      <tr><td>3. Dataset</td><td>Collect train/validation/test data.</td><td>Non-representative sample.</td></tr>
+      <tr><td>4. Metric</td><td>Choose quality criterion before tuning.</td><td>Using accuracy on imbalanced classes.</td></tr>
+      <tr><td>5. Preprocessing</td><td>Scale, encode, impute, remove obvious errors.</td><td>Fitting preprocessors on the whole dataset.</td></tr>
+      <tr><td>6. Model</td><td>Train the algorithm family.</td><td>Choosing overly complex family for small data.</td></tr>
+      <tr><td>7. Evaluation</td><td>Estimate quality on holdout/CV/test.</td><td>Using test set repeatedly for decisions.</td></tr>
+    </table>
+    <div class="note"><strong>Exam trick:</strong> ML is unnecessary when an exact formula or deterministic algorithm is known, e.g. Newton's law or sorting numbers.</div>
+  </div>
+
+  <div class="card theory anchor" id="lec-linreg-deep">
+    <h3>Linear Regression Deep Dive: Features, Metrics, Closed Form</h3>
+    <p>Линейная модель регрессии делает прогноз как взвешенную сумму признаков. Она быстрая, интерпретируемая и хорошо работает на больших данных, но требует правильного преобразования признаков.</p>
+    <div class="formula-box">
+      <p>Model: $a(x)=w_0+\langle w,x\rangle=w_0+\sum_{j=1}^{d}w_jx_j$</p>
+      <p>OLS objective: $\dfrac{1}{\ell}\|Xw-y\|_2^2 \to \min_w$</p>
+      <p>Closed form: $w=(X^TX)^{-1}X^Ty$ if $X^TX$ is invertible.</p>
+      <p>Ridge closed form: $w=(X^TX+\alpha I)^{-1}X^Ty$.</p>
+    </div>
+    <table class="params">
+      <tr><th>Feature problem</th><th>Transformation</th><th>Why it helps linear models</th></tr>
+      <tr><td>Nominal category</td><td>One-hot encoding</td><td>Each category gets its own baseline effect.</td></tr>
+      <tr><td>Text</td><td>Bag of Words / TF-IDF</td><td>Linear model learns weight for each word/token.</td></tr>
+      <tr><td>Nonlinear numeric effect</td><td>Binning / polynomial / interactions</td><td>Linear model becomes nonlinear in original variables.</td></tr>
+      <tr><td>Heavy-tailed feature</td><td>$\log(x)$ or $\log(1+x)$</td><td>Compresses very large values.</td></tr>
+      <tr><td>Periodicity</td><td>$\sin(x/T)$, $\cos(x/T)$</td><td>Encodes cycles like day/week/season.</td></tr>
+    </table>
+    <h4>Regression losses and their meaning</h4>
+    <table class="params">
+      <tr><th>Metric/loss</th><th>Formula</th><th>Best cue</th></tr>
+      <tr><td>MSE</td><td>$\frac1n\sum(y_i-\hat y_i)^2$</td><td>Smooth, strongly punishes large errors.</td></tr>
+      <tr><td>RMSE</td><td>$\sqrt{MSE}$</td><td>Same units as target.</td></tr>
+      <tr><td>$R^2$</td><td>$1-\frac{\sum(y_i-\hat y_i)^2}{\sum(y_i-\bar y)^2}$</td><td>Fraction of variance explained; can be negative.</td></tr>
+      <tr><td>MAE</td><td>$\frac1n\sum|y_i-\hat y_i|$</td><td>Robust to outliers; optimum constant is median.</td></tr>
+      <tr><td>MSLE</td><td>$\frac1n\sum(\log(\hat y_i+1)-\log(y_i+1))^2$</td><td>For nonnegative targets; compares orders/ratios.</td></tr>
+      <tr><td>MAPE</td><td>$\frac1n\sum\left|\frac{y_i-\hat y_i}{y_i}\right|$</td><td>Relative error; unstable near $y=0$.</td></tr>
+      <tr><td>SMAPE</td><td>$\frac1n\sum\frac{|y_i-\hat y_i|}{(|y_i|+|\hat y_i|)/2}$</td><td>Symmetric relative error variant.</td></tr>
+      <tr><td>Quantile loss</td><td>$\rho_\tau(z)=(\tau-1)[z&lt;0]z+\tau[z&gt;0]z$</td><td>Predicts $\tau$-quantile; useful when under/overprediction costs differ.</td></tr>
+    </table>
+    <div class="note"><strong>Important interpretation:</strong> squared loss learns conditional mean $E[y|x]$; absolute loss learns conditional median; quantile loss learns conditional $\tau$-quantile.</div>
+<pre><code class="language-python">from sklearn.metrics import (
+    mean_absolute_error, mean_squared_error,
+    root_mean_squared_error, r2_score,
+    mean_squared_log_error, mean_absolute_percentage_error
+)
+import numpy as np
+
+mae = mean_absolute_error(y_true, y_pred)
+mse = mean_squared_error(y_true, y_pred)
+rmse = root_mean_squared_error(y_true, y_pred)
+r2 = r2_score(y_true, y_pred)
+
+# MSLE requires non-negative y_true and y_pred
+msle = mean_squared_log_error(y_true, np.maximum(y_pred, 0))
+mape = mean_absolute_percentage_error(y_true, y_pred)
+
+# SMAPE custom implementation
+smape = np.mean(np.abs(y_true - y_pred) / ((np.abs(y_true) + np.abs(y_pred)) / 2))
+</code></pre>
+  </div>
+
+  <div class="card theory anchor" id="lec-optim-reg">
+    <h3>Optimisation, Scaling, Regularisation, Validation</h3>
+    <p>Градиент указывает направление наискорейшего роста, антиградиент — направление наискорейшего убывания. Поэтому параметры обновляют по правилу $w^{(k)}=w^{(k-1)}-\eta_k\nabla Q(w^{(k-1)})$.</p>
+    <table class="params">
+      <tr><th>Method</th><th>Uses per step</th><th>Why it matters</th></tr>
+      <tr><td>Batch GD</td><td>Full gradient over all objects.</td><td>Stable but expensive for large $\ell$.</td></tr>
+      <tr><td>SGD</td><td>One random object.</td><td>Cheap, noisy, can stream data from disk.</td></tr>
+      <tr><td>Mini-batch GD</td><td>Small batch.</td><td>Common compromise for neural nets and large data.</td></tr>
+      <tr><td>SAG</td><td>Stores old gradients and updates one.</td><td>Combines cheap steps with faster convergence for smooth convex losses.</td></tr>
+      <tr><td>Momentum</td><td>Moving average of gradients.</td><td>Reduces oscillations in narrow valleys.</td></tr>
+      <tr><td>AdaGrad</td><td>Per-coordinate learning rate.</td><td>Useful for sparse features; step can decay too much.</td></tr>
+      <tr><td>RMSprop</td><td>Exponentially weighted squared gradients.</td><td>Fixes AdaGrad's endlessly shrinking step issue.</td></tr>
+    </table>
+    <div class="formula-box">
+      <p>Standardization: $x'_{ij}=\dfrac{x_{ij}-\mu_j}{\sigma_j}$.</p>
+      <p>MinMax scaling: $x'_{ij}=\dfrac{x_{ij}-\min_i x_{ij}}{\max_i x_{ij}-\min_i x_{ij}}$.</p>
+      <p>L2 regularization: $Q_\alpha(w)=Q(w)+\alpha\sum_jw_j^2$.</p>
+      <p>L1 regularization: $Q_\alpha(w)=Q(w)+\alpha\sum_j|w_j|$.</p>
+    </div>
+    <table class="params">
+      <tr><th>Regularizer</th><th>Effect</th><th>Exam cue</th></tr>
+      <tr><td>L2 / Ridge</td><td>Shrinks weights smoothly.</td><td>Helps with multicollinearity and ill-conditioned $X^TX$.</td></tr>
+      <tr><td>L1 / Lasso</td><td>Can set weights exactly to zero.</td><td>Feature selection; sparse model.</td></tr>
+      <tr><td>ElasticNet</td><td>Mix of L1 and L2.</td><td>Useful with correlated features and sparsity needs.</td></tr>
+      <tr><td>Intercept</td><td>Usually not regularized.</td><td>Regularizing it means assuming target is close to zero.</td></tr>
+    </table>
+    <table class="params">
+      <tr><th>Term</th><th>Meaning</th><th>Do not confuse with</th></tr>
+      <tr><td>Parameter</td><td>Learned from training data, e.g. weights $w$.</td><td>Hyperparameter.</td></tr>
+      <tr><td>Hyperparameter</td><td>Controls learning/model class, e.g. $\alpha$, depth, $k$, learning rate.</td><td>Must be selected on validation/CV, not test.</td></tr>
+      <tr><td>Validation set</td><td>Used for model/hyperparameter selection.</td><td>Not a final unbiased quality estimate after tuning.</td></tr>
+      <tr><td>Test set</td><td>Used once for final evaluation.</td><td>Do not tune on it.</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import Ridge, Lasso, ElasticNet
+from sklearn.model_selection import GridSearchCV
+
+pipe = Pipeline([
+    ("scale", StandardScaler()),
+    ("model", Ridge())
+])
+
+grid = {
+    "model": [Ridge(), Lasso(max_iter=10000), ElasticNet(max_iter=10000)],
+    "model__alpha": [0.001, 0.01, 0.1, 1, 10]
+}
+
+search = GridSearchCV(pipe, grid, cv=5, scoring="neg_root_mean_squared_error")
+search.fit(X_train, y_train)
+print(-search.best_score_, search.best_params_)
+</code></pre>
+  </div>
+
+  <div class="card theory anchor" id="lec-linclass-svm">
+    <h3>Linear Classification, Margins, Logistic Regression, SVM</h3>
+    <p>Линейный классификатор разделяет пространство гиперплоскостью. Для бинарных меток $y\in\{-1,+1\}$ используется отступ $M_i=y_i\langle w,x_i\rangle$: если $M_i&gt;0$, объект классифицирован верно; чем больше $|M_i|$, тем выше уверенность.</p>
+    <div class="formula-box">
+      <p>Linear classifier: $a(x)=\operatorname{sign}(\langle w,x\rangle+w_0)$.</p>
+      <p>Zero-one loss: $[M_i&lt;0]$ is hard to optimize directly.</p>
+      <p>Logistic loss: $\log(1+e^{-M})$.</p>
+      <p>Hinge loss: $\max(0,1-M)$.</p>
+    </div>
+    <table class="params">
+      <tr><th>Upper bound loss</th><th>Formula</th><th>Associated idea/model</th></tr>
+      <tr><td>Logistic</td><td>$\log(1+e^{-M})$</td><td>Logistic regression; probability estimation.</td></tr>
+      <tr><td>Hinge</td><td>$(1-M)_+$</td><td>SVM; margin maximization.</td></tr>
+      <tr><td>Perceptron</td><td>$(-M)_+$</td><td>Penalizes only mistakes, no margin band.</td></tr>
+      <tr><td>Exponential</td><td>$e^{-M}$</td><td>AdaBoost-style weighting; very sensitive to noisy negative margins.</td></tr>
+      <tr><td>Sigmoid</td><td>$2/(1+e^M)$</td><td>Smooth bounded surrogate.</td></tr>
+    </table>
+    <h4>Logistic regression</h4>
+    <div class="formula-box">
+      <p>$P(y=1|x)=\sigma(\langle w,x\rangle)=\dfrac{1}{1+e^{-\langle w,x\rangle}}$</p>
+      <p>$\langle w,x\rangle=\log\dfrac{P(y=+1|x)}{P(y=-1|x)}$ — log-odds.</p>
+      <p>Log-loss / negative likelihood: $-[y\log p+(1-y)\log(1-p)]$.</p>
+    </div>
+    <h4>SVM</h4>
+    <table class="params">
+      <tr><th>Concept</th><th>Meaning</th><th>Exam cue</th></tr>
+      <tr><td>Hard margin</td><td>Requires perfect linear separation.</td><td>Maximizes margin $2/\|w\|$ with constraints $y_i(\langle w,x_i\rangle+b)\ge 1$.</td></tr>
+      <tr><td>Soft margin</td><td>Allows violations with slack variables $\xi_i$.</td><td>Useful for real noisy data.</td></tr>
+      <tr><td>C</td><td>Penalty for violations.</td><td>Large C fits train more closely; small C allows wider margin.</td></tr>
+      <tr><td>Support vectors</td><td>Objects near/on margin or violating it.</td><td>They determine the separating hyperplane.</td></tr>
+      <tr><td>Kernel trick</td><td>Implicit nonlinear feature mapping.</td><td>RBF/poly SVM gives nonlinear boundary.</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC, SVC
+
+# Linear probabilistic classifier
+logreg = make_pipeline(
+    StandardScaler(),
+    LogisticRegression(C=1.0, max_iter=1000, random_state=42)
+)
+
+# Linear SVM: hinge-like objective; no predict_proba
+linear_svm = make_pipeline(
+    StandardScaler(),
+    LinearSVC(C=1.0, random_state=42)
+)
+
+# Kernel SVM for nonlinear boundary
+rbf_svm = make_pipeline(
+    StandardScaler(),
+    SVC(C=1.0, kernel="rbf", gamma="scale", probability=True, random_state=42)
+)
+</code></pre>
+  </div>
+
+  <div class="card theory anchor" id="lec-ranking-metrics">
+    <h3>Classification, Ranking Metrics, ROC/PR, Lift</h3>
+    <p>Accuracy может быть бесполезной на несбалансированных классах: если 95% объектов отрицательные, классификатор “всегда отрицательный” уже даст 95% accuracy. Поэтому нужно смотреть confusion matrix, precision, recall, F1, ROC-AUC, PR-AUC и бизнес-метрики.</p>
+    <div class="formula-box">
+      <p>$precision=\dfrac{TP}{TP+FP}$, $recall=\dfrac{TP}{TP+FN}$, $F1=\dfrac{2PR}{P+R}$.</p>
+      <p>$FPR=\dfrac{FP}{FP+TN}$, $TPR=\dfrac{TP}{TP+FN}=recall$.</p>
+      <p>$Gini=2\cdot AUC-1$.</p>
+      <p>$lift=\dfrac{precision}{(TP+FN)/\ell}$ = precision divided by positive-class prevalence.</p>
+    </div>
+    <table class="params">
+      <tr><th>Metric</th><th>Meaning</th><th>When to use / caveat</th></tr>
+      <tr><td>Precision</td><td>How pure predicted positives are.</td><td>Important when false positives are expensive.</td></tr>
+      <tr><td>Recall</td><td>How many true positives are found.</td><td>Important when false negatives are expensive.</td></tr>
+      <tr><td>F1</td><td>Harmonic mean of precision and recall.</td><td>Falls if either precision or recall is low.</td></tr>
+      <tr><td>Average Precision</td><td>Average of precision@k over positions of positives.</td><td>Equivalent to common area approximation under PR curve.</td></tr>
+      <tr><td>ROC-AUC</td><td>Probability that a random positive is ranked above a random negative.</td><td>Can look overly optimistic when positives are extremely rare.</td></tr>
+      <tr><td>PR-AUC</td><td>Area under precision-recall curve.</td><td>More informative for rare positive class.</td></tr>
+      <tr><td>R-precision</td><td>Precision where number of predicted positives equals number of true positives.</td><td>Ranking/search style metric.</td></tr>
+      <tr><td>Lift</td><td>How much better selected subset is than random subset.</td><td>Marketing, churn, credit offers.</td></tr>
+    </table>
+    <div class="note"><strong>Threshold rule:</strong> increasing classification threshold usually increases precision and decreases recall. Decreasing threshold usually increases recall and decreases precision.</div>
+<pre><code class="language-python">from sklearn.metrics import (
+    precision_score, recall_score, f1_score,
+    roc_auc_score, average_precision_score,
+    precision_recall_curve
+)
+import numpy as np
+
+# y_score must be probability/score for positive class, not hard labels
+y_score = model.predict_proba(X_test)[:, 1]
+
+roc_auc = roc_auc_score(y_test, y_score)
+gini = 2 * roc_auc - 1
+ap = average_precision_score(y_test, y_score)  # PR-AUC style summary
+
+threshold = 0.7
+y_pred = (y_score >= threshold).astype(int)
+precision = precision_score(y_test, y_pred, zero_division=0)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+
+prevalence = np.mean(y_test == 1)
+lift = precision / prevalence if prevalence > 0 else np.nan
+print(roc_auc, gini, ap, precision, recall, f1, lift)
+</code></pre>
+  </div>
+
+  <div class="card theory anchor" id="lec-knn-distances">
+    <h3>KNN, Kernel/Parzen Weights, Text Distances, Approximate Neighbours</h3>
+    <p>kNN не строит явную модель на обучении: он запоминает выборку и для нового объекта ищет ближайших соседей. Качество почти полностью зависит от функции расстояния и масштаба признаков.</p>
+    <div class="formula-box">
+      <p>Classification: $a(u)=\arg\max_{y\in Y}\sum_{i=1}^{k}[y^{(i)}_u=y]$.</p>
+      <p>Weighted kNN / Parzen window: $a(u)=\arg\max_y\sum_{i=1}^{k}K\left(\dfrac{\rho(u,x^{(i)}_u)}{h}\right)[y^{(i)}_u=y]$.</p>
+      <p>Nadaraya-Watson regression: $a(u)=\dfrac{\sum_i K(\rho(u,x_i)/h)y_i}{\sum_i K(\rho(u,x_i)/h)}$.</p>
+    </div>
+    <table class="params">
+      <tr><th>Choice</th><th>Effect</th><th>Exam cue</th></tr>
+      <tr><td>Small k</td><td>Low bias, high variance.</td><td>Can overfit noise.</td></tr>
+      <tr><td>Large k</td><td>High bias, low variance.</td><td>Can oversmooth and underfit.</td></tr>
+      <tr><td>Uniform weights</td><td>All neighbours vote equally.</td><td>Distance ignored inside top k.</td></tr>
+      <tr><td>Distance/kernel weights</td><td>Closer neighbours matter more.</td><td>Usually better when distances are meaningful.</td></tr>
+      <tr><td>Scaling</td><td>Required for numeric features.</td><td>Otherwise large-scale feature dominates distance.</td></tr>
+    </table>
+    <h4>Distances and search tricks</h4>
+    <table class="params">
+      <tr><th>Topic</th><th>Key idea</th><th>Exam cue</th></tr>
+      <tr><td>Euclidean search brute force</td><td>Check all objects.</td><td>Complexity $O(\ell d)$ per query.</td></tr>
+      <tr><td>kd-tree</td><td>Space partitioning by coordinates.</td><td>Good in low dimensions, degrades in high dimensions.</td></tr>
+      <tr><td>LSH</td><td>Hash so similar objects collide with higher probability.</td><td>Approximate nearest neighbours.</td></tr>
+      <tr><td>MinHash</td><td>For sets/Jaccard similarity.</td><td>Collision probability equals Jaccard similarity.</td></tr>
+      <tr><td>Cosine LSH</td><td>Random hyperplane: $\operatorname{sign}(\langle w,x\rangle)$.</td><td>Useful for text vectors.</td></tr>
+      <tr><td>Euclidean LSH</td><td>Random projection into buckets.</td><td>Bucket width controls approximation.</td></tr>
+    </table>
+    <h4>Text distances</h4>
+    <table class="params">
+      <tr><th>Representation</th><th>What it captures</th><th>Limitation</th></tr>
+      <tr><td>Bag of Words</td><td>Word counts/frequencies.</td><td>Ignores word order and synonyms.</td></tr>
+      <tr><td>Cosine similarity</td><td>$\cos(x,z)=\frac{\langle x,z\rangle}{\|x\|\|z\|}$.</td><td>Often use distance $1-\cos(x,z)$.</td></tr>
+      <tr><td>Word embeddings</td><td>Semantic similarity between words.</td><td>Needs pretrained/vector representation.</td></tr>
+      <tr><td>Word Mover's Distance</td><td>Minimum cost to move word mass from one text to another.</td><td>More semantic but computationally heavier.</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import GridSearchCV
+
+pipe = make_pipeline(
+    StandardScaler(),
+    KNeighborsClassifier()
+)
+
+param_grid = {
+    "kneighborsclassifier__n_neighbors": [3, 5, 9, 15, 31],
+    "kneighborsclassifier__weights": ["uniform", "distance"],
+    "kneighborsclassifier__p": [1, 2]  # 1=Manhattan, 2=Euclidean
+}
+
+search = GridSearchCV(pipe, param_grid, cv=5, scoring="f1_macro", n_jobs=-1)
+search.fit(X_train, y_train)
+print(search.best_params_, search.best_score_)
+</code></pre>
+  </div>
+
+  <div class="card theory anchor" id="lec-tree-theory">
+    <h3>Decision Tree Theory: Splits, Impurity, Stopping, Missing Values</h3>
+    <p>Решающее дерево рекурсивно разбивает пространство признаков. Внутренняя вершина хранит предикат, обычно $[x_j&lt;t]$, а лист хранит прогноз: класс/вероятности для классификации или среднее/медиану для регрессии.</p>
+    <div class="formula-box">
+      <p>Split gain: $Q(R_m,j,t)=H(R_m)-\dfrac{|R_l|}{|R_m|}H(R_l)-\dfrac{|R_r|}{|R_m|}H(R_r)$.</p>
+      <p>Regression impurity with MSE: variance inside node.</p>
+      <p>Gini: $G=\sum_k p_k(1-p_k)=1-\sum_kp_k^2$.</p>
+      <p>Entropy: $H=-\sum_kp_k\log p_k$.</p>
+    </div>
+    <table class="params">
+      <tr><th>Criterion</th><th>Meaning</th><th>Exam cue</th></tr>
+      <tr><td>Classification error</td><td>$1-p_{k^*}$.</td><td>Crude: only cares about majority class.</td></tr>
+      <tr><td>Gini</td><td>Probability of impurity under class distribution.</td><td>CART default for classification.</td></tr>
+      <tr><td>Entropy</td><td>Uncertainty of class distribution.</td><td>ID3/C4.5 style; max for uniform classes, min for pure node.</td></tr>
+      <tr><td>MSE variance</td><td>How far targets are from node mean.</td><td>Regression tree split criterion.</td></tr>
+      <tr><td>MAE median</td><td>Absolute deviation from node median.</td><td>Robust regression tree alternative.</td></tr>
+    </table>
+    <table class="params">
+      <tr><th>Regularization / handling</th><th>Why it matters</th><th>Typical parameter / method</th></tr>
+      <tr><td>Max depth</td><td>Prevents overly specific rules.</td><td><code>max_depth</code></td></tr>
+      <tr><td>Min samples leaf</td><td>Smooths leaf predictions.</td><td><code>min_samples_leaf</code></td></tr>
+      <tr><td>Max leaves</td><td>Limits tree size.</td><td><code>max_leaf_nodes</code></td></tr>
+      <tr><td>Pruning</td><td>Grow large tree then cut branches.</td><td>Cost-complexity pruning: $R_\alpha(T)=R(T)+\alpha|T|$.</td></tr>
+      <tr><td>Missing values</td><td>Tree can route missing values specially.</td><td>Surrogate splits, weighted routing, or special extreme value.</td></tr>
+      <tr><td>Categorical features</td><td>Split category set into two groups.</td><td>For binary classification/regression, categories can be ordered by target statistics.</td></tr>
+    </table>
+    <div class="note"><strong>Important:</strong> a deep tree can memorize training data. Trees are powerful but unstable; this is why ensembles over trees are so important.</div>
+  </div>
+
+  <div class="card theory anchor" id="lec-bagging-rf">
+    <h3>Bagging, Random Forest, Bias-Variance, OOB</h3>
+    <p>Бэггинг строит много моделей независимо на bootstrap-подвыборках и усредняет их ответы. Он особенно полезен для нестабильных моделей с высоким variance, например глубоких деревьев.</p>
+    <div class="formula-box">
+      <p>Bagging regression/class-score: $a_N(x)=\dfrac1N\sum_{n=1}^{N}b_n(x)$.</p>
+      <p>Bias-variance idea for squared loss: expected error = noise + bias$^2$ + variance.</p>
+      <p>If base errors are uncorrelated, averaging can reduce variance roughly by factor $N$; correlation weakens the gain.</p>
+    </div>
+    <table class="params">
+      <tr><th>Concept</th><th>Meaning</th><th>Exam cue</th></tr>
+      <tr><td>Bootstrap</td><td>Sample $\ell$ objects with replacement from training set.</td><td>Some objects repeat, some are left out.</td></tr>
+      <tr><td>Bagging</td><td>Average/vote independent base models.</td><td>Reduces variance, not usually bias.</td></tr>
+      <tr><td>Random Forest</td><td>Bagging of trees + random subset of features at each split.</td><td>Further decorrelates trees.</td></tr>
+      <tr><td>OOB score</td><td>Use trees that did not see object $x_i$ to predict $x_i$.</td><td>Validation estimate without separate holdout.</td></tr>
+      <tr><td>RF similarity</td><td>Objects are similar if often in the same leaf.</td><td>Leaves can be used as nonlinear categorical features.</td></tr>
+    </table>
+    <table class="params">
+      <tr><th>Bias/variance pattern</th><th>Model family</th><th>Consequence</th></tr>
+      <tr><td>High bias, low variance</td><td>Too simple, e.g. very restricted linear model.</td><td>Underfitting.</td></tr>
+      <tr><td>Low bias, high variance</td><td>Very flexible, e.g. deep tree.</td><td>Overfitting risk.</td></tr>
+      <tr><td>Random forest</td><td>Deep trees averaged.</td><td>Keeps low bias while reducing variance.</td></tr>
+    </table>
+    <div class="note"><strong>Lecture heuristic:</strong> for random forests, try <code>max_features='sqrt'</code> in classification; for regression, about one third of features is a common starting point.</div>
+<pre><code class="language-python">from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+rf = RandomForestClassifier(
+    n_estimators=500,
+    max_features="sqrt",
+    min_samples_leaf=1,
+    bootstrap=True,
+    oob_score=True,
+    random_state=42,
+    n_jobs=-1,
+    class_weight="balanced"
+)
+rf.fit(X_train, y_train)
+
+print("OOB score:", rf.oob_score_)
+print("Test F1:", f1_score(y_test, rf.predict(X_test), average="macro"))
+</code></pre>
+  </div>
+
+  <div class="card theory anchor" id="lec-gb-xgb">
+    <h3>Gradient Boosting, XGBoost, Stacking</h3>
+    <p>Бустинг строит композицию последовательно: каждая новая модель исправляет ошибки текущей композиции. Для MSE новая модель учится на остатках $y_i-a_{N-1}(x_i)$; для общего дифференцируемого loss — на антиградиентах по прогнозам.</p>
+    <div class="formula-box">
+      <p>Additive model: $a_N(x)=a_{N-1}(x)+\eta\gamma_N b_N(x)$.</p>
+      <p>Pseudo-residual: $s_i^{(N)}=-\left.\dfrac{\partial L(y_i,z)}{\partial z}\right|_{z=a_{N-1}(x_i)}$.</p>
+      <p>For MSE: $s_i=y_i-a_{N-1}(x_i)$.</p>
+      <p>For logistic loss: $s_i=\dfrac{y_i}{1+\exp(y_i a_{N-1}(x_i))}$ for $y_i\in\{-1,+1\}$.</p>
+    </div>
+    <table class="params">
+      <tr><th>Regularization in boosting</th><th>Effect</th><th>Exam cue</th></tr>
+      <tr><td>Learning rate $\eta$</td><td>Shrinks each step.</td><td>Lower $\eta$ usually needs more trees and can generalize better.</td></tr>
+      <tr><td>Number of trees</td><td>More sequential corrections.</td><td>Too many can overfit; use validation/early stopping.</td></tr>
+      <tr><td>Tree depth</td><td>Controls interaction complexity.</td><td>Boosting often uses shallow trees, around 3-6 levels.</td></tr>
+      <tr><td>Subsample</td><td>Train each tree on random subset.</td><td>Stochastic gradient boosting; can reduce overfitting and speed up.</td></tr>
+      <tr><td>Robust loss</td><td>Less sensitive to outliers/noisy labels.</td><td>Exponential loss can overweight noisy negative-margin examples.</td></tr>
+    </table>
+    <h4>XGBoost-style second-order view</h4>
+    <p>XGBoost improves plain gradient boosting by using a second-order Taylor approximation, regularizing tree complexity, and choosing splits based on the gain from optimal leaf values.</p>
+    <div class="formula-box">
+      <p>Let $s_i=-g_i$ be negative gradient and $h_i$ be second derivative.</p>
+      <p>Tree regularization: $\gamma J+\dfrac{\lambda}{2}\sum_{j=1}^{J}b_j^2$.</p>
+      <p>Optimal leaf value in lecture notation: $b_j=\dfrac{S_j}{H_j+\lambda}$ where $S_j=\sum_{i\in R_j}s_i$, $H_j=\sum_{i\in R_j}h_i$.</p>
+      <p>Split gain: $\dfrac12\left(\dfrac{S_L^2}{H_L+\lambda}+\dfrac{S_R^2}{H_R+\lambda}-\dfrac{S^2}{H+\lambda}\right)-\gamma$.</p>
+    </div>
+    <h4>Stacking and blending</h4>
+    <table class="params">
+      <tr><th>Method</th><th>Idea</th><th>Leakage-safe detail</th></tr>
+      <tr><td>Stacking</td><td>Use base model predictions as features for a meta-model.</td><td>Train meta-model on out-of-fold base predictions.</td></tr>
+      <tr><td>Blending</td><td>Linear/weighted average of model predictions.</td><td>Weights selected on validation data, not test.</td></tr>
+      <tr><td>Why useful</td><td>Combines different model families.</td><td>Can mix linear models, forests, boosting, neural nets.</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.ensemble import StackingClassifier, RandomForestClassifier, HistGradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import StratifiedKFold
+
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+stack = StackingClassifier(
+    estimators=[
+        ("rf", RandomForestClassifier(n_estimators=300, random_state=42, n_jobs=-1)),
+        ("hgb", HistGradientBoostingClassifier(max_iter=300, learning_rate=0.05, random_state=42))
+    ],
+    final_estimator=LogisticRegression(max_iter=1000),
+    cv=cv,             # out-of-fold predictions for meta-model
+    n_jobs=-1
+)
+
+stack.fit(X_train, y_train)
+print(stack.score(X_test, y_test))
+</code></pre>
+  </div>
+
+  <div class="card theory anchor" id="lec-exam-traps">
+    <h3>Exam Traps from These Lectures</h3>
+    <table class="params">
+      <tr><th>Trap</th><th>Correct answer / fix</th></tr>
+      <tr><td>“Accuracy is 95%, so classifier is good.”</td><td>Check class balance and baseline; use precision/recall/F1/PR-AUC for rare positives.</td></tr>
+      <tr><td>“Correlation near 0 means no relationship.”</td><td>Only no linear relationship; nonlinear dependence may exist.</td></tr>
+      <tr><td>“Fit scaler before train/test split or CV.”</td><td>Data leakage. Fit preprocessors only on train folds via Pipeline.</td></tr>
+      <tr><td>“One-hot with all categories plus intercept is harmless.”</td><td>Columns are linearly dependent; some methods tolerate it, but multicollinearity can matter.</td></tr>
+      <tr><td>“Large C means stronger regularization.”</td><td>In sklearn logistic/SVM, $C$ is inverse regularization strength: smaller C = stronger regularization.</td></tr>
+      <tr><td>“L1 and L2 do the same thing.”</td><td>L2 shrinks; L1 can zero weights and select features.</td></tr>
+      <tr><td>“Deep tree is always better.”</td><td>Deep tree can memorize training data; use depth/leaf limits, pruning, bagging, CV.</td></tr>
+      <tr><td>“Random forest and boosting both mainly reduce the same error component.”</td><td>Random forest mainly reduces variance; boosting often reduces bias but can increase variance if overdone.</td></tr>
+      <tr><td>“ROC-AUC is always enough.”</td><td>For extremely imbalanced data, PR-AUC can be more informative.</td></tr>
+      <tr><td>“Stacking can train meta-model on in-sample base predictions.”</td><td>That leaks overfitting; use out-of-fold predictions.</td></tr>
+      <tr><td>“KNN does not need preprocessing.”</td><td>Distances are scale-sensitive; scale numeric features.</td></tr>
+      <tr><td>“DBSCAN always finds all clusters.”</td><td>Sensitive to <code>eps</code> and <code>min_samples</code>; labels noise as <code>-1</code>.</td></tr>
+    </table>
+  </div>
+</section>
 
 <!-- ━━━━━━━━━━━━━━━━ NUMPY ━━━━━━━━━━━━━━━━ -->
 <section class="section" id="numpy">
@@ -500,7 +1433,7 @@ df = pd.read_csv(
     sep=',',
     header=0,
     index_col='id',
-    usecols=['age', 'salary', 'city'],
+    usecols=['id', 'age', 'salary', 'city', 'joined_date'],
     nrows=5000,
     dtype={'age': int, 'salary': float},
     na_values=['N/A', '-', '?'],
@@ -512,7 +1445,7 @@ df = pd.read_csv(
 print(df.head(5))          # first 5 rows
 print(df.tail(3))          # last 3 rows
 print(df.shape)            # (rows, cols)
-print(df.info())           # dtypes + non-null counts
+df.info()                  # dtypes + non-null counts
 print(df.describe())       # stats for numeric cols
 print(df.describe(include='all'))  # includes categorical
 </code></pre>
@@ -522,6 +1455,7 @@ print(df.describe(include='all'))  # includes categorical
     <h3>Column Operations</h3>
     <p>Rename, add, modify, or type-cast columns.</p>
 <pre><code class="language-python">import pandas as pd
+import numpy as np
 
 df = pd.read_csv('data.csv')
 
@@ -539,7 +1473,7 @@ df['price'] = df['price'] * 1.1               # in-place multiplication
 df['name']  = df['name'].str.strip().str.lower()  # string ops
 
 # ── Change dtype ─────────────────────────────
-df['age']   = df['age'].astype(int)
+df['age']   = df['age'].fillna(0).astype(int)  # or astype('Int64') to keep missing values
 df['date']  = pd.to_datetime(df['date'])
 df['cat']   = df['cat'].astype('category')
 
@@ -581,6 +1515,42 @@ result = df[df['email'].str.contains('@gmail', na=False)]
 
 # ── Between ──────────────────────────────────
 result = df[df['age'].between(25, 40)]         # inclusive both ends
+</code></pre>
+  </div>
+
+  <div class="card pandas anchor" id="pd-agg">
+    <h3>Aggregation, Correlation, Frequency Tables</h3>
+    <p>Part C often asks to group data, compute correlations, and answer simple questions from a table.</p>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv('data.csv')
+
+# Frequency tables
+counts = df['city'].value_counts()
+shares = df['city'].value_counts(normalize=True)
+crosstab = pd.crosstab(df['city'], df['target'], normalize='index')
+
+# Aggregation
+by_city = df.groupby('city').agg(
+    avg_salary=('salary', 'mean'),
+    med_age=('age', 'median'),
+    n=('salary', 'size')
+).reset_index()
+
+# Pivot table
+pivot = df.pivot_table(
+    values='salary',
+    index='city',
+    columns='department',
+    aggfunc='mean'
+)
+
+# Correlation
+corr = df.select_dtypes(include='number').corr(method='pearson')
+spearman_corr = df.select_dtypes(include='number').corr(method='spearman')
+
+# Answer simple questions
+best_city = by_city.sort_values('avg_salary', ascending=False).iloc[0]['city']
 </code></pre>
   </div>
 
@@ -666,8 +1636,8 @@ num_cols  = df.select_dtypes(include='number').columns.tolist()
 num_cols  = df.select_dtypes(include=['int64','float64']).columns.tolist()
 
 # ── Categorical / string columns ──────────────
-cat_cols  = df.select_dtypes(include='object').columns.tolist()
-cat_cols2 = df.select_dtypes(include=['object','category']).columns.tolist()
+cat_cols  = df.select_dtypes(include=['object','string','category']).columns.tolist()
+cat_cols2 = cat_cols
 non_num   = df.select_dtypes(exclude='number').columns.tolist()
 
 # ── Boolean / datetime ────────────────────────
@@ -720,7 +1690,7 @@ df['bmi'] = df['weight'] / df['height'] ** 2
     <span class="badge polars-badge">fast dataframe library</span>
   </div>
   <p style="font-size:.88rem;margin-bottom:1rem;">
-    Polars is a Rust-based DataFrame library that is significantly faster than Pandas for large datasets. It uses a lazy evaluation model, has no index (unlike Pandas), and its expression API is composable and consistent.
+    Polars is a Rust-based DataFrame library that is often faster than Pandas for large tabular workloads, depending on data and operations. It also supports lazy evaluation, has no index (unlike Pandas), and its expression API is composable and consistent.
     Install: <code>pip install polars</code>
   </p>
 
@@ -740,7 +1710,7 @@ df = pl.read_csv(
     n_rows=5000,                          # limit rows
     null_values=['N/A', '-', '?'],        # extra null markers
     try_parse_dates=True,                 # auto-parse date strings
-    dtypes={'age': pl.Int32},             # dtype overrides
+    schema_overrides={'age': pl.Int32},   # dtype overrides (dtypes was renamed)
     encoding='utf8',
 )
 
@@ -1036,7 +2006,7 @@ elastic  = ElasticNet(alpha=0.1, l1_ratio=0.5)  # L1 + L2
 
   <div class="card sklearn anchor" id="sk-logreg">
     <h3>Logistic Regression</h3>
-    <p>Linear classifier using sigmoid (binary) or softmax (multiclass). Despite the name, it's a classification algorithm. Outputs calibrated probabilities.</p>
+    <p>Linear classifier using sigmoid (binary) or softmax (multiclass). Despite the name, it's a classification algorithm. It estimates class probabilities; calibration is often reasonable for well-specified data but not guaranteed.</p>
     <div class="formula-box">
       <p><strong>Binary:</strong> $P(y=1|x) = \sigma(w \cdot x + b) = \dfrac{1}{1+e^{-(w \cdot x + b)}}$</p>
       <p><strong>Loss:</strong> $-\dfrac{1}{n}\sum_i \left[y_i \log \hat{p}_i + (1-y_i)\log(1-\hat{p}_i)\right]$</p>
@@ -1044,10 +2014,10 @@ elastic  = ElasticNet(alpha=0.1, l1_ratio=0.5)  # L1 + L2
     <table class="params">
       <tr><th>Parameter</th><th>Description</th></tr>
       <tr><td>C</td><td>Inverse regularisation strength (smaller = stronger regularisation). Default 1.0</td></tr>
-      <tr><td>penalty</td><td><code>'l1'</code>, <code>'l2'</code> (default), <code>'elasticnet'</code>, <code>None</code></td></tr>
-      <tr><td>solver</td><td>Optimisation algorithm: <code>'lbfgs'</code> (default), <code>'liblinear'</code> (L1), <code>'saga'</code> (large datasets)</td></tr>
+      <tr><td>l1_ratio</td><td>Regularisation mix in sklearn 1.8: <code>0.0</code> ≈ L2, <code>1.0</code> ≈ L1, values between them ≈ elastic-net</td></tr>
+      <tr><td>solver</td><td>Optimisation algorithm: <code>'lbfgs'</code> (default), <code>'liblinear'</code>, <code>'saga'</code> (large datasets)</td></tr>
       <tr><td>max_iter</td><td>Max iterations for solver convergence (increase if ConvergenceWarning)</td></tr>
-      <tr><td>multi_class</td><td><code>'auto'</code>, <code>'ovr'</code> (one-vs-rest), <code>'multinomial'</code></td></tr>
+      <tr><td>multiclass</td><td>sklearn 1.8 uses multinomial loss for multiclass when supported; use <code>OneVsRestClassifier</code> if one-vs-rest is required.</td></tr>
     </table>
 <pre><code class="language-python">from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
@@ -1080,7 +2050,7 @@ print(f"Coef shape: {model.coef_.shape}")   # (n_classes, n_features)
       <tr><th>Parameter</th><th>Description</th></tr>
       <tr><td>n_clusters</td><td>Number of clusters k (required)</td></tr>
       <tr><td>init</td><td>Centroid init: <code>'k-means++'</code> (smart, default) or <code>'random'</code></td></tr>
-      <tr><td>n_init</td><td>Number of runs with different seeds; best is kept (default 10)</td></tr>
+      <tr><td>n_init</td><td>Number of runs with different seeds; best is kept. In sklearn 1.8 default is <code>'auto'</code>: 1 run for <code>'k-means++'</code>, 10 for random/callable init.</td></tr>
       <tr><td>max_iter</td><td>Max iterations per run (default 300)</td></tr>
       <tr><td>random_state</td><td>Seed for reproducibility</td></tr>
     </table>
@@ -1091,7 +2061,7 @@ import numpy as np
 X = np.random.rand(300, 4)
 X = StandardScaler().fit_transform(X)  # always scale for distance-based methods
 
-model = KMeans(n_clusters=3, init='k-means++', n_init=10, random_state=42)
+model = KMeans(n_clusters=3, init='k-means++', n_init='auto', random_state=42)
 model.fit(X)
 
 labels   = model.labels_               # cluster index for each sample
@@ -1104,7 +2074,7 @@ new_labels = model.predict(X)
 # Choosing k — Elbow method
 inertias = []
 for k in range(1, 11):
-    km = KMeans(n_clusters=k, n_init=10, random_state=42)
+    km = KMeans(n_clusters=k, n_init='auto', random_state=42)
     km.fit(X)
     inertias.append(km.inertia_)
 # Plot inertias vs k and look for the "elbow"
@@ -1249,8 +2219,129 @@ y_proba = pipe.predict_proba(X_test)  # shape (n_samples, n_classes)
 # Tune k with cross-validation
 from sklearn.model_selection import cross_val_score
 for k in [3, 5, 7, 11, 15]:
-    scores = cross_val_score(KNeighborsClassifier(n_neighbors=k), X, y, cv=5, scoring='accuracy')
+    pipe_k = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=k))
+    scores = cross_val_score(pipe_k, X, y, cv=5, scoring='accuracy')
     print(f"k={k}: {scores.mean():.3f} ± {scores.std():.3f}")
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-tree">
+    <h3>Decision Tree</h3>
+    <p>Nonlinear model that recursively splits data by feature thresholds. Good for interpretation, but deep trees easily overfit.</p>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>criterion</td><td><code>'gini'</code> or <code>'entropy'</code> for classification; <code>'squared_error'</code> for regression</td></tr>
+      <tr><td>max_depth</td><td>Maximum tree depth. Smaller depth = stronger regularization</td></tr>
+      <tr><td>min_samples_split</td><td>Minimum samples required to split a node</td></tr>
+      <tr><td>min_samples_leaf</td><td>Minimum samples in a leaf. Helps smooth predictions</td></tr>
+      <tr><td>class_weight</td><td>Use <code>'balanced'</code> for imbalanced classification</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor, plot_tree
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import f1_score
+import matplotlib.pyplot as plt
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+tree = DecisionTreeClassifier(
+    criterion='gini',
+    max_depth=5,
+    min_samples_leaf=10,
+    random_state=42,
+    class_weight='balanced'
+)
+tree.fit(X_train, y_train)
+
+feature_names = getattr(X_train, 'columns', [f'x{i}' for i in range(X_train.shape[1])])
+class_names = [str(c) for c in sorted(set(y_train))]
+
+y_pred = tree.predict(X_test)
+print(f1_score(y_test, y_pred, average='macro'))
+
+plt.figure(figsize=(14, 6))
+plot_tree(tree, feature_names=feature_names, class_names=class_names, filled=True, max_depth=2)
+plt.show()
+
+# Regression variant
+reg_tree = DecisionTreeRegressor(max_depth=5, min_samples_leaf=10, random_state=42)
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-forest">
+    <h3>Random Forest</h3>
+    <p>Bagging ensemble of decision trees. Each tree sees a bootstrap sample and random subset of features; voting/averaging reduces variance.</p>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>n_estimators</td><td>Number of trees. More trees usually improve stability, but increase time</td></tr>
+      <tr><td>max_depth</td><td>Depth limit for each tree</td></tr>
+      <tr><td>max_features</td><td>Number/fraction of features considered at each split</td></tr>
+      <tr><td>min_samples_leaf</td><td>Minimum samples per leaf; useful regularization</td></tr>
+      <tr><td>oob_score</td><td>Out-of-bag validation score using bootstrap leftovers</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.metrics import classification_report
+import pandas as pd
+
+rf = RandomForestClassifier(
+    n_estimators=300,
+    max_depth=None,
+    min_samples_leaf=2,
+    max_features='sqrt',
+    random_state=42,
+    n_jobs=-1,
+    class_weight='balanced'
+)
+rf.fit(X_train, y_train)
+
+y_pred = rf.predict(X_test)
+print(classification_report(y_test, y_pred))
+
+# Feature importances for quick interpretation
+feature_names = getattr(X_train, 'columns', [f'x{i}' for i in range(X_train.shape[1])])
+importances = pd.Series(rf.feature_importances_, index=feature_names)
+print(importances.sort_values(ascending=False).head(10))
+
+# Regression variant
+rf_reg = RandomForestRegressor(n_estimators=300, random_state=42, n_jobs=-1)
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-gb">
+    <h3>Gradient Boosting</h3>
+    <p>Sequential ensemble: each next tree corrects mistakes of the current model. Strong on tabular data, sensitive to learning rate and tree complexity.</p>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>learning_rate</td><td>Step size for each new tree. Lower often needs more trees</td></tr>
+      <tr><td>n_estimators / max_iter</td><td>Number of boosting stages</td></tr>
+      <tr><td>max_depth / max_leaf_nodes</td><td>Complexity of individual trees</td></tr>
+      <tr><td>subsample</td><td>Use less than 1.0 for stochastic gradient boosting</td></tr>
+      <tr><td>early_stopping</td><td>Stop when validation score no longer improves</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.ensemble import GradientBoostingClassifier, HistGradientBoostingClassifier
+from sklearn.model_selection import cross_val_score
+
+gb = GradientBoostingClassifier(
+    n_estimators=200,
+    learning_rate=0.05,
+    max_depth=3,
+    subsample=0.8,
+    random_state=42
+)
+gb.fit(X_train, y_train)
+print(gb.score(X_test, y_test))
+
+# Faster modern implementation for larger tabular datasets
+hgb = HistGradientBoostingClassifier(
+    max_iter=300,
+    learning_rate=0.05,
+    max_leaf_nodes=31,
+    early_stopping=True,
+    random_state=42
+)
+scores = cross_val_score(hgb, X_train, y_train, cv=5, scoring='f1_macro')
+print(scores.mean(), scores.std())
 </code></pre>
   </div>
 </section>
@@ -1286,6 +2377,7 @@ X_original = scaler.inverse_transform(X_train_scaled)
 
 # Best practice: use Pipeline to prevent data leakage
 from sklearn.pipeline import make_pipeline
+from sklearn.linear_model import LogisticRegression
 pipe = make_pipeline(StandardScaler(), LogisticRegression())
 </code></pre>
   </div>
@@ -1417,9 +2509,7 @@ df_dummies = pd.get_dummies(df, columns=['color'], drop_first=False, dtype=float
 
 # ── polars to_dummies ─────────────────────────
 df_pl = pl.DataFrame({'color': ['red','blue','green','red'], 'value': [1,2,3,4]})
-df_pl_enc = df_pl.to_dummies('color')
-# Concatenate with remaining columns
-df_pl_full = pl.concat([df_pl.drop('color'), df_pl_enc], how='horizontal')
+df_pl_full = df_pl.to_dummies('color')  # keeps non-selected columns and replaces color by dummies
 </code></pre>
   </div>
 
@@ -1494,6 +2584,60 @@ model = make_pipeline(
     PolynomialFeatures(degree=2, include_bias=False),
     LinearRegression()
 )
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-pipeline-full">
+    <h3>End-to-End Pipeline for Mixed Tabular Data</h3>
+    <p>Use this pattern for Part C: numeric and categorical preprocessing stay inside cross-validation, preventing data leakage.</p>
+<pre><code class="language-python">from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.metrics import f1_score
+
+X = df.drop(columns='target')
+y = df['target']
+
+num_cols = X.select_dtypes(include='number').columns
+cat_cols = X.select_dtypes(include=['object', 'string', 'category']).columns
+
+numeric_pipe = Pipeline([
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler())
+])
+
+categorical_pipe = Pipeline([
+    ('imputer', SimpleImputer(strategy='most_frequent')),
+    ('ohe', OneHotEncoder(handle_unknown='ignore'))
+])
+
+preprocess = ColumnTransformer([
+    ('num', numeric_pipe, num_cols),
+    ('cat', categorical_pipe, cat_cols)
+])
+
+pipe = Pipeline([
+    ('prep', preprocess),
+    ('model', LogisticRegression(max_iter=1000, random_state=42))
+])
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+param_grid = {
+    'model__C': [0.1, 1, 10],
+}
+
+gs = GridSearchCV(pipe, param_grid, cv=5, scoring='f1_macro', n_jobs=-1)
+gs.fit(X_train, y_train)
+
+y_pred = gs.predict(X_test)
+print(gs.best_params_)
+print(f1_score(y_test, y_pred, average='macro'))
 </code></pre>
   </div>
 </section>
@@ -1572,7 +2716,7 @@ print(f1_score(y_test, y_pred, average='macro'))
 print(roc_auc_score(y_test, y_proba, multi_class='ovr', average='macro'))
 
 # ── Full report ───────────────────────────────
-print(classification_report(y_test, y_pred, target_names=['class_0','class_1','class_2']))
+print(classification_report(y_test, y_pred))
 
 # ── Confusion matrix ──────────────────────────
 cm = confusion_matrix(y_test, y_pred)
@@ -1613,12 +2757,11 @@ plt.show()
         <code style="font-size:.75rem">r2_score(y_true, y_pred)</code>
       </div>
     </div>
-<pre><code class="language-python">from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-import numpy as np
+<pre><code class="language-python">from sklearn.metrics import mean_absolute_error, mean_squared_error, root_mean_squared_error, r2_score
 
 mae  = mean_absolute_error(y_test, y_pred)
 mse  = mean_squared_error(y_test, y_pred)
-rmse = np.sqrt(mse)                          # Root MSE
+rmse = root_mean_squared_error(y_test, y_pred)
 r2   = r2_score(y_test, y_pred)
 
 print(f"MAE  : {mae:.4f}")
@@ -1655,7 +2798,7 @@ print(f"MAPE : {mape*100:.2f}%")
       <div class="metric-card">
         <span class="tag tag-clu">Clustering</span>
         <h4>V-Measure</h4>
-        <div class="formula-box" style="font-size:.78rem">$V_\beta = \dfrac{(1+\beta^2) \cdot h \cdot c}{\beta^2 \cdot h + c}$</div>
+        <div class="formula-box" style="font-size:.78rem">$V_\beta = \dfrac{(1+\beta) \cdot h \cdot c}{\beta \cdot h + c}$</div>
         <p style="font-size:.8rem">Harmonic mean of homogeneity (h) and completeness (c). β weights completeness.</p>
         <code style="font-size:.75rem">v_measure_score(labels_true, labels_pred)</code>
       </div>
@@ -1712,11 +2855,13 @@ db  = davies_bouldin_score(X, labels_pred)
       <tr><td>ROC-AUC</td><td><code>'roc_auc'</code></td><td><code>'roc_auc_ovr'</code> / <code>'roc_auc_ovo'</code></td><td>Needs <code>predict_proba</code></td></tr>
       <tr><td>MAE</td><td colspan="2"><code>'neg_mean_absolute_error'</code></td><td>Negated — negate result to get MAE</td></tr>
       <tr><td>MSE</td><td colspan="2"><code>'neg_mean_squared_error'</code></td><td>Negated — negate result to get MSE</td></tr>
+      <tr><td>RMSE</td><td colspan="2"><code>'neg_root_mean_squared_error'</code></td><td>Negated — negate result to get RMSE</td></tr>
       <tr><td>R²</td><td colspan="2"><code>'r2'</code></td><td>–</td></tr>
     </table>
 
 <pre><code class="language-python">from sklearn.model_selection import cross_val_score, cross_validate, StratifiedKFold
 from sklearn.linear_model import LogisticRegression
+from sklearn.datasets import load_iris
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 import numpy as np
