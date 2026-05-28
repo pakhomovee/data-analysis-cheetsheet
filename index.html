@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Analysis Cheatsheet</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+<style>
+  :root {
+    /* ── section accent colors ── */
+    --numpy:   #0d9488;   /* teal */
+    --pandas:  #2563eb;   /* blue */
+    --polars:  #7c3aed;   /* violet */
+    --sklearn: #c2410c;   /* terracotta */
+
+    /* ── pastel dot / border / badge colors ── */
+    --numpy-dot:    #5eead4;
+    --pandas-dot:   #93c5fd;
+    --polars-dot:   #c4b5fd;
+    --sklearn-dot:  #fb923c;
+
+    --numpy-border:  #99f6e4;
+    --pandas-border: #bfdbfe;
+    --polars-border: #ddd6fe;
+    --sklearn-border:#fed7aa;
+
+    --numpy-bg:   #f0fdfa;
+    --pandas-bg:  #eff6ff;
+    --polars-bg:  #f5f3ff;
+    --sklearn-bg: #fff7ed;
+
+    /* ── global palette ── */
+    --bg:         #faf7f2;   /* warm cream */
+    --card-bg:    #ffffff;
+    --border:     #e8ddd2;
+    --text:       #28180a;
+    --text-muted: #7a6250;
+    --sidebar-bg: #1e1811;  /* deep warm charcoal */
+    --sidebar-w:  280px;
+    --radius:     10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--text);
+    display: flex; min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  /* ─── Sidebar ─── */
+  #sidebar {
+    width: var(--sidebar-w); min-width: var(--sidebar-w);
+    background: var(--sidebar-bg);
+    position: fixed; top: 0; left: 0; height: 100vh;
+    overflow-y: auto; z-index: 100; padding-bottom: 2rem;
+  }
+  #sidebar::-webkit-scrollbar { width: 3px; }
+  #sidebar::-webkit-scrollbar-thumb { background: #3d2e1e; border-radius: 3px; }
+
+  .sidebar-title {
+    padding: 1.25rem 1.2rem 1rem;
+    font-size: .9rem; font-weight: 700; color: #f5ede0;
+    border-bottom: 1px solid #2e2015; letter-spacing: .4px;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .sidebar-title::before {
+    content: '';
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: #fb923c; flex-shrink: 0;
+  }
+
+  .nav-group { margin-top: .2rem; }
+  .nav-group-header {
+    padding: .55rem 1.2rem; font-size: .68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.3px;
+    display: flex; align-items: center; gap: .5rem;
+    color: #a08060;
+  }
+  .nav-group-header .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .nav-group-header.numpy .dot   { background: var(--numpy-dot); }
+  .nav-group-header.pandas .dot  { background: var(--pandas-dot); }
+  .nav-group-header.polars .dot  { background: var(--polars-dot); }
+  .nav-group-header.sklearn .dot { background: var(--sklearn-dot); }
+
+  .nav-items { padding-left: .8rem; }
+  .nav-items a {
+    display: block; padding: .3rem .9rem; font-size: .8rem;
+    color: #9a7d60; text-decoration: none; border-radius: 5px;
+    transition: background .12s, color .12s;
+  }
+  .nav-items a:hover  { background: #2e2015; color: #f0e4d4; }
+  .nav-items a.active { background: #3a2818; color: #f5ede0; font-weight: 600; }
+
+  /* ─── Main ─── */
+  #main { margin-left: var(--sidebar-w); flex: 1; padding: 2.2rem 2.8rem; max-width: 1060px; }
+
+  /* ─── Section titles ─── */
+  .section { margin-bottom: 3.2rem; }
+  .section-title {
+    font-size: 1.55rem; font-weight: 800; margin-bottom: 1.4rem;
+    display: flex; align-items: center; gap: .75rem;
+    letter-spacing: -.3px;
+  }
+  .section-title .badge {
+    font-size: .62rem; font-weight: 700; padding: .22rem .65rem;
+    border-radius: 20px; text-transform: uppercase; letter-spacing: .9px;
+    margin-top: .1rem;
+  }
+
+  .numpy-color   { color: var(--numpy); }
+  .pandas-color  { color: var(--pandas); }
+  .polars-color  { color: var(--polars); }
+  .sklearn-color { color: var(--sklearn); }
+
+  .numpy-badge   { background: var(--numpy-bg);   color: var(--numpy);   border: 1px solid var(--numpy-border); }
+  .pandas-badge  { background: var(--pandas-bg);  color: var(--pandas);  border: 1px solid var(--pandas-border); }
+  .polars-badge  { background: var(--polars-bg);  color: var(--polars);  border: 1px solid var(--polars-border); }
+  .sklearn-badge { background: var(--sklearn-bg); color: var(--sklearn); border: 1px solid var(--sklearn-border); }
+
+  /* ─── Cards ─── */
+  .card {
+    background: var(--card-bg); border-radius: var(--radius);
+    padding: 1.4rem 1.6rem; margin-bottom: 1.1rem;
+    box-shadow: 0 1px 3px rgba(28,14,0,.06), 0 0 0 1px rgba(28,14,0,.04);
+    border-left: 4px solid transparent;
+  }
+  .card.numpy   { border-left-color: var(--numpy-border); }
+  .card.pandas  { border-left-color: var(--pandas-border); }
+  .card.polars  { border-left-color: var(--polars-border); }
+  .card.sklearn { border-left-color: var(--sklearn-border); }
+
+  .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .45rem; color: var(--text); }
+  .card h4 { font-size: .88rem; font-weight: 700; margin: .6rem 0 .3rem; color: var(--text); }
+  .card p  { font-size: .87rem; line-height: 1.65; color: var(--text-muted); margin-bottom: .55rem; }
+  .card ul { font-size: .85rem; color: var(--text-muted); padding-left: 1.2rem; line-height: 1.8; margin-bottom: .6rem; }
+
+  /* ─── Code blocks ─── */
+  pre { margin: .65rem 0 0; border-radius: 7px; overflow-x: auto; font-size: .79rem; }
+  pre code.hljs { border-radius: 7px; padding: 1rem 1.2rem; }
+
+  /* ─── Formula box ─── */
+  .formula-box {
+    background: #fdf6ee; border: 1px solid #e8d8c4; border-radius: 7px;
+    padding: .75rem 1.2rem; margin: .6rem 0; font-size: .88rem;
+    overflow-x: auto;
+  }
+  .formula-box p { color: #4a3520; margin-bottom: .3rem; }
+
+  /* ─── Param table ─── */
+  .params { width: 100%; border-collapse: collapse; font-size: .81rem; margin-top: .65rem; }
+  .params th {
+    background: #f5ede3; padding: .4rem .75rem;
+    text-align: left; font-weight: 600; border: 1px solid var(--border);
+    color: #3d2810;
+  }
+  .params td { padding: .38rem .75rem; border: 1px solid var(--border); vertical-align: top; color: var(--text-muted); }
+  .params td:first-child { font-family: 'JetBrains Mono', 'Fira Code', monospace; color: #7c3aed; white-space: nowrap; font-size: .78rem; }
+  .params tr:nth-child(even) td { background: #fdf8f2; }
+
+  /* ─── Metric cards ─── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1rem; margin-top: .8rem; }
+  .metric-card { background: #fdf8f2; border-radius: 8px; padding: 1rem 1.1rem; border: 1px solid var(--border); }
+  .metric-card h4 { font-size: .88rem; font-weight: 700; margin-bottom: .4rem; }
+  .metric-card .tag {
+    font-size: .63rem; font-weight: 700; padding: .15rem .55rem;
+    border-radius: 12px; margin-bottom: .5rem; display: inline-block;
+    letter-spacing: .5px; text-transform: uppercase;
+  }
+  .tag-clf { background: #dbeafe; color: #1e40af; }
+  .tag-reg { background: #d1fae5; color: #065f46; }
+  .tag-clu { background: #ede9fe; color: #4c1d95; }
+
+  /* ─── Scoring table ─── */
+  .scoring-table { width: 100%; border-collapse: collapse; font-size: .81rem; margin-top: .65rem; }
+  .scoring-table th { background: #2e1f10; color: #f5ede0; padding: .42rem .75rem; text-align: left; }
+  .scoring-table th:first-child { border-radius: 5px 0 0 0; }
+  .scoring-table th:last-child  { border-radius: 0 5px 0 0; }
+  .scoring-table td { padding: .4rem .75rem; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+  .scoring-table td:first-child { font-family: monospace; font-weight: 600; color: #2563eb; }
+  .scoring-table td:last-child  { font-family: monospace; font-size: .74rem; color: #0d9488; }
+
+  /* ─── Misc ─── */
+  .anchor { scroll-margin-top: 1.5rem; }
+  code { font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; }
+
+  @media (max-width: 768px) {
+    #sidebar { display: none; }
+    #main { margin-left: 0; padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ SIDEBAR ══════════════════ -->
+<nav id="sidebar">
+  <div class="sidebar-title">Data Analysis Cheatsheet</div>
+
+  <div class="nav-group">
+    <div class="nav-group-header numpy"><span class="dot"></span>NumPy</div>
+    <div class="nav-items">
+      <a href="#np-create">Array Creation</a>
+      <a href="#np-random">Random Arrays</a>
+      <a href="#np-cumsum">Prefix Sum</a>
+      <a href="#np-median">Median</a>
+      <a href="#np-stack">Stacking &amp; Concat</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-header pandas"><span class="dot"></span>Pandas</div>
+    <div class="nav-items">
+      <a href="#pd-csv">Loading CSV</a>
+      <a href="#pd-columns">Column Operations</a>
+      <a href="#pd-filter">Filtering</a>
+      <a href="#pd-nan">Handling NaNs</a>
+      <a href="#pd-dropc">Drop &amp; Concat</a>
+      <a href="#pd-dtypes">Numeric/Categorical Cols</a>
+      <a href="#pd-iter">Iteration</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-header polars"><span class="dot"></span>Polars</div>
+    <div class="nav-items">
+      <a href="#pl-csv">Loading CSV</a>
+      <a href="#pl-columns">Column Operations</a>
+      <a href="#pl-filter">Filtering</a>
+      <a href="#pl-null">Handling Nulls</a>
+      <a href="#pl-dropc">Drop &amp; Concat</a>
+      <a href="#pl-dtypes">Numeric/Categorical Cols</a>
+      <a href="#pl-iter">Iteration</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-header sklearn"><span class="dot"></span>Scikit-learn — Models</div>
+    <div class="nav-items">
+      <a href="#sk-split">Train/Test Split</a>
+      <a href="#sk-linreg">Linear Regression</a>
+      <a href="#sk-logreg">Logistic Regression</a>
+      <a href="#sk-kmeans">K-Means</a>
+      <a href="#sk-dbscan">DBSCAN</a>
+      <a href="#sk-pca">PCA</a>
+      <a href="#sk-svc">SVC</a>
+      <a href="#sk-knn">KNN</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-header sklearn"><span class="dot"></span>Scikit-learn — Preprocessing</div>
+    <div class="nav-items">
+      <a href="#sk-std">Standardization</a>
+      <a href="#sk-norm">Normalization</a>
+      <a href="#sk-bin">Binarization</a>
+      <a href="#sk-le">Label Encoding</a>
+      <a href="#sk-oe">Ordinal Encoding</a>
+      <a href="#sk-ohe">One-Hot Encoding</a>
+      <a href="#sk-impute">Imputing</a>
+      <a href="#sk-poly">Polynomial Features</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-header sklearn"><span class="dot"></span>Scikit-learn — Metrics</div>
+    <div class="nav-items">
+      <a href="#sk-clf-metrics">Classification Metrics</a>
+      <a href="#sk-reg-metrics">Regression Metrics</a>
+      <a href="#sk-clu-metrics">Clustering Metrics</a>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-header sklearn"><span class="dot"></span>Scikit-learn — Model Selection</div>
+    <div class="nav-items">
+      <a href="#sk-cv">Cross-Validation</a>
+      <a href="#sk-grid">GridSearchCV</a>
+      <a href="#sk-rand">RandomizedSearchCV</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════ MAIN CONTENT ══════════════════ -->
+<main id="main">
+
+<!-- ━━━━━━━━━━━━━━━━ NUMPY ━━━━━━━━━━━━━━━━ -->
+<section class="section" id="numpy">
+  <div class="section-title">
+    <span class="numpy-color">NumPy</span>
+    <span class="badge numpy-badge">numerical computing</span>
+  </div>
+
+  <!-- Array Creation -->
+  <div class="card numpy anchor" id="np-create">
+    <h3>Array Creation</h3>
+    <p>Core functions to create arrays from scratch or from existing data.</p>
+    <table class="params">
+      <tr><th>Function</th><th>Description</th></tr>
+      <tr><td>np.array(data)</td><td>Create array from Python list/nested list</td></tr>
+      <tr><td>np.zeros(shape)</td><td>Array filled with 0.0</td></tr>
+      <tr><td>np.ones(shape)</td><td>Array filled with 1.0</td></tr>
+      <tr><td>np.full(shape, val)</td><td>Array filled with constant value</td></tr>
+      <tr><td>np.arange(start, stop, step)</td><td>Evenly-spaced values (like Python range)</td></tr>
+      <tr><td>np.linspace(start, stop, num)</td><td>num evenly-spaced values over [start, stop]</td></tr>
+      <tr><td>np.eye(n)</td><td>n×n identity matrix</td></tr>
+      <tr><td>np.empty(shape)</td><td>Uninitialized array (fast, values undefined)</td></tr>
+    </table>
+<pre><code class="language-python">import numpy as np
+
+# From list
+arr    = np.array([1, 2, 3, 4, 5])
+arr_2d = np.array([[1, 2, 3], [4, 5, 6]])  # shape (2, 3)
+
+# Filled arrays
+zeros  = np.zeros((3, 4))        # 3×4 of 0.0
+ones   = np.ones((2, 3))         # 2×3 of 1.0
+full   = np.full((3, 3), 7)      # 3×3 of 7
+
+# Range-based
+arange  = np.arange(0, 10, 2)          # [0 2 4 6 8]
+linspace = np.linspace(0, 1, 5)        # [0.   0.25 0.5  0.75 1.  ]
+
+# Identity matrix
+eye = np.eye(3)                  # 3×3 identity
+
+# Useful attributes
+print(arr.shape)   # (5,)
+print(arr.dtype)   # int64
+print(arr.ndim)    # 1
+print(arr.size)    # 5  (total elements)
+</code></pre>
+  </div>
+
+  <!-- Random Arrays -->
+  <div class="card numpy anchor" id="np-random">
+    <h3>Random Arrays</h3>
+    <p>Generate arrays with random values. Always set a seed for reproducibility.</p>
+    <table class="params">
+      <tr><th>Function</th><th>Description</th></tr>
+      <tr><td>np.random.rand(d0,d1,...)</td><td>Uniform [0, 1) — shape given as separate args</td></tr>
+      <tr><td>np.random.randn(d0,d1,...)</td><td>Standard normal N(0,1)</td></tr>
+      <tr><td>np.random.randint(low, high, size)</td><td>Random integers in [low, high)</td></tr>
+      <tr><td>np.random.choice(a, size, replace)</td><td>Random sample from array/range</td></tr>
+      <tr><td>np.random.shuffle(arr)</td><td>Shuffle array in-place</td></tr>
+      <tr><td>np.random.default_rng(seed)</td><td>New-style Generator (recommended)</td></tr>
+    </table>
+<pre><code class="language-python">import numpy as np
+
+np.random.seed(42)                          # legacy seed
+
+rand   = np.random.rand(3, 4)              # 3×4, uniform [0,1)
+randn  = np.random.randn(3, 4)             # 3×4, N(0,1)
+randint = np.random.randint(0, 10, (3, 4)) # 3×4 integers in [0,10)
+
+# Sample from an array
+choice = np.random.choice([10,20,30,40], size=3, replace=False)
+
+# Shuffle in place
+arr = np.array([1, 2, 3, 4, 5])
+np.random.shuffle(arr)                     # arr is modified
+
+# ── Preferred modern API ──────────────────────
+rng  = np.random.default_rng(seed=42)
+r1   = rng.random((3, 4))                 # uniform [0,1)
+r2   = rng.standard_normal((3, 4))        # N(0,1)
+r3   = rng.integers(0, 10, (3, 4))        # integers
+r4   = rng.normal(loc=5, scale=2, size=(3, 4))   # N(5,2)
+r5   = rng.choice(100, size=10, replace=False)    # no-repeat sample
+</code></pre>
+  </div>
+
+  <!-- Prefix Sum -->
+  <div class="card numpy anchor" id="np-cumsum">
+    <h3>Prefix Sum (Cumulative Sum)</h3>
+    <p><code>np.cumsum</code> computes the running total — element <em>i</em> of the result equals the sum of the first <em>i+1</em> elements of the input. Useful for sliding-window problems and probability distributions.</p>
+<pre><code class="language-python">import numpy as np
+
+arr = np.array([1, 2, 3, 4, 5])
+prefix = np.cumsum(arr)          # [ 1  3  6 10 15]
+
+# 2-D: choose axis
+A = np.array([[1, 2, 3],
+              [4, 5, 6]])
+
+row_prefix = np.cumsum(A, axis=1)  # prefix along each row
+# [[ 1  3  6]
+#  [ 4  9 15]]
+
+col_prefix = np.cumsum(A, axis=0)  # prefix along each column
+# [[1 2 3]
+#  [5 7 9]]
+
+# Prefix product (analogous)
+prod_prefix = np.cumprod(arr)    # [  1   2   6  24 120]
+</code></pre>
+  </div>
+
+  <!-- Median -->
+  <div class="card numpy anchor" id="np-median">
+    <h3>Median</h3>
+    <p>The middle value when sorted. For an even number of elements, the average of the two middle values is returned. Unlike <code>mean</code>, median is robust to outliers.</p>
+<pre><code class="language-python">import numpy as np
+
+arr = np.array([3, 1, 4, 1, 5, 9, 2, 6])
+median_val = np.median(arr)          # 3.5  (average of 3 and 4)
+
+# 2-D
+A = np.array([[1, 2, 3],
+              [4, 5, 6]])
+
+np.median(A)            # 3.5  (flatten first)
+np.median(A, axis=0)    # [2.5 3.5 4.5]  — per column
+np.median(A, axis=1)    # [2.  5. ]       — per row
+
+# Percentiles (generalisation)
+np.percentile(arr, 25)          # Q1
+np.percentile(arr, [25, 50, 75])  # Q1, Q2, Q3
+</code></pre>
+  </div>
+
+  <!-- Stacking -->
+  <div class="card numpy anchor" id="np-stack">
+    <h3>Stacking &amp; Concatenate</h3>
+    <p>Combine multiple arrays. Rule of thumb: <code>hstack</code>/<code>vstack</code> for convenience, <code>concatenate</code> when you need explicit axis control.</p>
+    <table class="params">
+      <tr><th>Function</th><th>Axis</th><th>Effect</th></tr>
+      <tr><td>np.hstack([a, b])</td><td>1 (cols)</td><td>Joins arrays side-by-side</td></tr>
+      <tr><td>np.vstack([a, b])</td><td>0 (rows)</td><td>Stacks arrays on top of each other</td></tr>
+      <tr><td>np.concatenate([a,b], axis)</td><td>any</td><td>General concat along given axis</td></tr>
+      <tr><td>np.stack([a, b], axis)</td><td>new</td><td>Creates a <em>new</em> axis (increases ndim)</td></tr>
+    </table>
+<pre><code class="language-python">import numpy as np
+
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+np.hstack([a, b])          # [1 2 3 4 5 6]   — join along existing axis
+np.vstack([a, b])          # [[1 2 3]
+                            #  [4 5 6]]
+np.concatenate([a, b])     # [1 2 3 4 5 6]   — same as hstack for 1-D
+
+# 2-D examples
+A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+
+np.hstack([A, B])           # [[1 2 5 6]
+                             #  [3 4 7 8]]
+np.vstack([A, B])           # [[1 2]
+                             #  [3 4]
+                             #  [5 6]
+                             #  [7 8]]
+np.concatenate([A, B], axis=1)  # same as hstack
+np.concatenate([A, B], axis=0)  # same as vstack
+
+# np.stack adds a NEW axis
+np.stack([a, b], axis=0)   # [[1 2 3]   shape (2,3)
+                             #  [4 5 6]]
+np.stack([a, b], axis=1)   # [[1 4]     shape (3,2)
+                             #  [2 5]
+                             #  [3 6]]
+</code></pre>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━ PANDAS ━━━━━━━━━━━━━━━━ -->
+<section class="section" id="pandas">
+  <div class="section-title">
+    <span class="pandas-color">Pandas</span>
+    <span class="badge pandas-badge">dataframe library</span>
+  </div>
+
+  <div class="card pandas anchor" id="pd-csv">
+    <h3>Loading CSV</h3>
+    <p><code>pd.read_csv</code> is the main entry point for tabular data. After loading, always inspect with <code>head()</code>, <code>info()</code>, and <code>describe()</code>.</p>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>sep / delimiter</td><td>Column separator (default <code>','</code>)</td></tr>
+      <tr><td>header</td><td>Row number for column names (default 0 = first row; <code>None</code> = no header)</td></tr>
+      <tr><td>index_col</td><td>Column(s) to use as row index</td></tr>
+      <tr><td>usecols</td><td>List of columns to load — saves memory</td></tr>
+      <tr><td>nrows</td><td>Load only the first N rows</td></tr>
+      <tr><td>dtype</td><td>Dict of column → dtype overrides</td></tr>
+      <tr><td>na_values</td><td>Additional strings to treat as NaN</td></tr>
+      <tr><td>parse_dates</td><td>Columns to parse as datetime</td></tr>
+      <tr><td>encoding</td><td>File encoding (default <code>'utf-8'</code>)</td></tr>
+    </table>
+<pre><code class="language-python">import pandas as pd
+
+# Minimal
+df = pd.read_csv('data.csv')
+
+# Full options
+df = pd.read_csv(
+    'data.csv',
+    sep=',',
+    header=0,
+    index_col='id',
+    usecols=['age', 'salary', 'city'],
+    nrows=5000,
+    dtype={'age': int, 'salary': float},
+    na_values=['N/A', '-', '?'],
+    parse_dates=['joined_date'],
+    encoding='utf-8',
+)
+
+# Quick inspection
+print(df.head(5))          # first 5 rows
+print(df.tail(3))          # last 3 rows
+print(df.shape)            # (rows, cols)
+print(df.info())           # dtypes + non-null counts
+print(df.describe())       # stats for numeric cols
+print(df.describe(include='all'))  # includes categorical
+</code></pre>
+  </div>
+
+  <div class="card pandas anchor" id="pd-columns">
+    <h3>Column Operations</h3>
+    <p>Rename, add, modify, or type-cast columns.</p>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv('data.csv')
+
+# ── Rename ───────────────────────────────────
+df.columns = ['col1', 'col2', 'col3']          # rename ALL at once
+df = df.rename(columns={'old': 'new', 'a': 'b'})  # rename specific
+
+# ── Add / compute new column ─────────────────
+df['total'] = df['price'] * df['qty']          # arithmetic
+df['log_price'] = df['price'].apply(np.log)    # apply function
+df['label'] = df['score'].apply(lambda x: 'high' if x > 80 else 'low')
+
+# ── Modify existing column ───────────────────
+df['price'] = df['price'] * 1.1               # in-place multiplication
+df['name']  = df['name'].str.strip().str.lower()  # string ops
+
+# ── Change dtype ─────────────────────────────
+df['age']   = df['age'].astype(int)
+df['date']  = pd.to_datetime(df['date'])
+df['cat']   = df['cat'].astype('category')
+
+# ── Reorder columns ──────────────────────────
+df = df[['name', 'age', 'salary', 'city']]
+
+# ── Access a column ──────────────────────────
+col = df['age']            # Series
+col = df.age               # dot notation (avoid if name has spaces)
+</code></pre>
+  </div>
+
+  <div class="card pandas anchor" id="pd-filter">
+    <h3>Filtering Rows</h3>
+    <p>Select rows that meet conditions using boolean indexing, <code>.loc</code>, or <code>.query</code>.</p>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv('data.csv')
+
+# ── Single condition ─────────────────────────
+young = df[df['age'] < 30]
+
+# ── Multiple conditions — use & | ~ with parentheses ──
+result = df[(df['age'] > 25) & (df['salary'] < 60000)]
+result = df[(df['city'] == 'NYC') | (df['city'] == 'LA')]
+result = df[~df['city'].isin(['NYC', 'LA'])]    # NOT in list
+
+# ── .loc: label-based (rows, columns) ────────
+result = df.loc[df['age'] > 30, ['name', 'age', 'salary']]
+
+# ── .query: SQL-like string ──────────────────
+result = df.query('age > 25 and salary < 60000')
+result = df.query('city in ["NYC", "LA"]')
+
+# ── isin / str methods ───────────────────────
+result = df[df['city'].isin(['NYC', 'LA', 'Chicago'])]
+result = df[df['name'].str.startswith('J', na=False)]
+result = df[df['email'].str.contains('@gmail', na=False)]
+
+# ── Between ──────────────────────────────────
+result = df[df['age'].between(25, 40)]         # inclusive both ends
+</code></pre>
+  </div>
+
+  <div class="card pandas anchor" id="pd-nan">
+    <h3>Handling NaNs</h3>
+    <p>Missing values are stored as <code>NaN</code> (float) or <code>pd.NA</code>. Always check before modelling.</p>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv('data.csv')
+
+# ── Detect ───────────────────────────────────
+df.isna()                      # bool DataFrame
+df.isna().sum()                # NaN count per column
+df.isna().sum() / len(df)      # fraction of missing values
+df.isna().any(axis=1)          # rows with at least one NaN
+
+# ── Fill ─────────────────────────────────────
+df['age'].fillna(0)                         # constant
+df['age'].fillna(df['age'].mean())          # mean imputation
+df['age'].fillna(df['age'].median())        # median imputation
+df['cat'].fillna('Unknown')                 # for categorical
+df.fillna({'age': 0, 'city': 'Unknown'})    # per-column dict
+
+# Forward / backward fill (time-series)
+df['price'].ffill()            # carry last valid value forward
+df['price'].bfill()            # fill from next valid value
+
+# ── Drop rows with NaN ────────────────────────
+df.dropna()                                # any NaN → drop row
+df.dropna(subset=['age', 'salary'])        # only if NaN in these cols
+df.dropna(how='all')                       # drop only if ALL values NaN
+df.dropna(thresh=3)                        # keep rows with ≥3 non-NaN
+
+# ── Drop columns ─────────────────────────────
+df.dropna(axis=1)                          # drop columns with any NaN
+
+# NOTE: most methods return new DataFrame; use inplace=True to modify in-place
+df.fillna(0, inplace=True)
+# or:  df = df.fillna(0)
+</code></pre>
+  </div>
+
+  <div class="card pandas anchor" id="pd-dropc">
+    <h3>Drop Columns &amp; Concat</h3>
+<pre><code class="language-python">import pandas as pd
+
+df1 = pd.read_csv('part1.csv')
+df2 = pd.read_csv('part2.csv')
+
+# ── Drop columns ─────────────────────────────
+df = df1.drop(columns=['col1', 'col2'])
+df = df1.drop(['col1', 'col2'], axis=1)    # same with axis
+
+# Drop rows by index label
+df = df1.drop([0, 1, 2])                   # drop first 3 rows (if default index)
+df = df1.drop(index=[0, 1, 2])
+
+# ── Vertical concat (append rows) ────────────
+combined = pd.concat([df1, df2], axis=0, ignore_index=True)
+# ignore_index=True resets row index (0,1,2,...)
+
+# Only common columns:
+combined = pd.concat([df1, df2], axis=0, join='inner', ignore_index=True)
+
+# ── Horizontal concat (append columns) ───────
+combined = pd.concat([df1, df2], axis=1)
+
+# ── Merge / join on key column ───────────────
+merged = pd.merge(df1, df2, on='id', how='inner')   # inner join
+merged = pd.merge(df1, df2, on='id', how='left')    # left join
+</code></pre>
+  </div>
+
+  <div class="card pandas anchor" id="pd-dtypes">
+    <h3>Finding Numeric &amp; Categorical Columns</h3>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv('data.csv')
+
+# ── Numeric columns ───────────────────────────
+num_cols  = df.select_dtypes(include='number').columns.tolist()
+# or more explicit:
+num_cols  = df.select_dtypes(include=['int64','float64']).columns.tolist()
+
+# ── Categorical / string columns ──────────────
+cat_cols  = df.select_dtypes(include='object').columns.tolist()
+cat_cols2 = df.select_dtypes(include=['object','category']).columns.tolist()
+non_num   = df.select_dtypes(exclude='number').columns.tolist()
+
+# ── Boolean / datetime ────────────────────────
+bool_cols = df.select_dtypes(include='bool').columns.tolist()
+dt_cols   = df.select_dtypes(include='datetime').columns.tolist()
+
+# ── All dtypes at a glance ────────────────────
+print(df.dtypes)
+print(df.nunique())           # unique values per column (helps identify cats)
+</code></pre>
+  </div>
+
+  <div class="card pandas anchor" id="pd-iter">
+    <h3>Iterating Over Columns &amp; Rows</h3>
+    <p><strong>Avoid row iteration for performance-critical code.</strong> Prefer vectorised operations (<code>df['col'].apply()</code>, arithmetic on Series) whenever possible.</p>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv('data.csv')
+
+# ── Iterate over columns ─────────────────────
+for col_name, col_series in df.items():
+    print(col_name, col_series.dtype, col_series.mean())
+
+# List columns
+for col_name in df.columns:
+    print(col_name)
+
+# ── Iterate over rows (slow) ──────────────────
+# iterrows — yields (index, Series); Series is slow to access
+for idx, row in df.iterrows():
+    print(idx, row['age'], row['salary'])
+
+# itertuples — yields namedtuples; ~10× faster than iterrows
+for row in df.itertuples(index=True, name='Row'):
+    print(row.Index, row.age, row.salary)   # attribute access
+
+# ── Preferred: vectorised apply ──────────────
+df['bmi'] = df.apply(lambda row: row['weight'] / row['height']**2, axis=1)
+
+# Even better: operate on columns directly
+df['bmi'] = df['weight'] / df['height'] ** 2
+</code></pre>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━ POLARS ━━━━━━━━━━━━━━━━ -->
+<section class="section" id="polars">
+  <div class="section-title">
+    <span class="polars-color">Polars</span>
+    <span class="badge polars-badge">fast dataframe library</span>
+  </div>
+  <p style="font-size:.88rem;margin-bottom:1rem;">
+    Polars is a Rust-based DataFrame library that is significantly faster than Pandas for large datasets. It uses a lazy evaluation model, has no index (unlike Pandas), and its expression API is composable and consistent.
+    Install: <code>pip install polars</code>
+  </p>
+
+  <div class="card polars anchor" id="pl-csv">
+    <h3>Loading CSV</h3>
+<pre><code class="language-python">import polars as pl
+
+# Eager (loads immediately)
+df = pl.read_csv('data.csv')
+
+# With options
+df = pl.read_csv(
+    'data.csv',
+    separator=',',
+    has_header=True,
+    columns=['age', 'salary', 'city'],   # select subset
+    n_rows=5000,                          # limit rows
+    null_values=['N/A', '-', '?'],        # extra null markers
+    try_parse_dates=True,                 # auto-parse date strings
+    dtypes={'age': pl.Int32},             # dtype overrides
+    encoding='utf8',
+)
+
+# Lazy (deferred execution — efficient for pipelines)
+lf = pl.scan_csv('data.csv')
+df = lf.filter(pl.col('age') > 25).collect()
+
+# Inspection
+print(df.head(5))
+print(df.schema)           # {col: dtype, ...}
+print(df.shape)            # (rows, cols)
+print(df.describe())       # summary statistics
+print(df.dtypes)           # list of dtypes
+print(df.columns)          # list of column names
+</code></pre>
+  </div>
+
+  <div class="card polars anchor" id="pl-columns">
+    <h3>Column Operations</h3>
+    <p>Polars is <strong>immutable</strong> — operations return a new DataFrame. Use <code>with_columns</code> to add/modify columns.</p>
+<pre><code class="language-python">import polars as pl
+
+df = pl.read_csv('data.csv')
+
+# ── Rename ───────────────────────────────────
+df = df.rename({'old_name': 'new_name', 'a': 'b'})
+
+# ── Add / modify columns via expressions ─────
+df = df.with_columns(
+    (pl.col('price') * pl.col('qty')).alias('total'),
+    (pl.col('name').str.to_lowercase()).alias('name'),
+    pl.col('age').cast(pl.Int32),
+)
+
+# Modify in same name (overwrite)
+df = df.with_columns(
+    (pl.col('price') * 1.1).alias('price')
+)
+
+# ── Apply element-wise function ───────────────
+df = df.with_columns(
+    pl.col('score').map_elements(
+        lambda x: 'high' if x > 80 else 'low',
+        return_dtype=pl.String
+    ).alias('grade')
+)
+
+# ── Select subset of columns ──────────────────
+subset = df.select(['name', 'age', 'salary'])
+subset = df.select(pl.col('name', 'age', 'salary'))
+
+# ── Reorder columns ───────────────────────────
+df = df.select(['name', 'age', 'salary'] + [c for c in df.columns if c not in ['name','age','salary']])
+</code></pre>
+  </div>
+
+  <div class="card polars anchor" id="pl-filter">
+    <h3>Filtering Rows</h3>
+<pre><code class="language-python">import polars as pl
+
+df = pl.read_csv('data.csv')
+
+# ── Single condition ─────────────────────────
+young = df.filter(pl.col('age') < 30)
+
+# ── Multiple conditions ───────────────────────
+result = df.filter(
+    (pl.col('age') > 25) & (pl.col('salary') < 60000)
+)
+result = df.filter(
+    (pl.col('city') == 'NYC') | (pl.col('city') == 'LA')
+)
+
+# ── is_in ─────────────────────────────────────
+result = df.filter(pl.col('city').is_in(['NYC', 'LA', 'Chicago']))
+result = df.filter(~pl.col('city').is_in(['NYC', 'LA']))   # NOT in
+
+# ── String operations ────────────────────────
+result = df.filter(pl.col('name').str.starts_with('J'))
+result = df.filter(pl.col('email').str.contains('@gmail'))
+
+# ── Between ──────────────────────────────────
+result = df.filter(pl.col('age').is_between(25, 40))
+
+# ── Null checks ──────────────────────────────
+result = df.filter(pl.col('age').is_null())
+result = df.filter(pl.col('age').is_not_null())
+</code></pre>
+  </div>
+
+  <div class="card polars anchor" id="pl-null">
+    <h3>Handling Nulls</h3>
+    <p>Polars uses <code>null</code> (not <code>NaN</code>) for missing values. <code>NaN</code> is only for float columns and means "not a number" (different from missing).</p>
+<pre><code class="language-python">import polars as pl
+
+df = pl.read_csv('data.csv')
+
+# ── Detect ───────────────────────────────────
+print(df.null_count())                     # null count per column
+
+df.filter(pl.col('age').is_null())         # rows where age is null
+df.with_columns(pl.col('age').is_null().alias('age_missing'))
+
+# ── Fill nulls ────────────────────────────────
+df = df.with_columns(pl.col('age').fill_null(0))            # constant
+df = df.with_columns(pl.col('age').fill_null(pl.col('age').mean()))  # mean
+df = df.with_columns(pl.col('city').fill_null('Unknown'))
+
+# Forward / backward fill
+df = df.with_columns(pl.col('price').forward_fill())
+df = df.with_columns(pl.col('price').backward_fill())
+
+# Fill with strategy
+df = df.with_columns(
+    pl.col('age').fill_null(strategy='forward'),
+    pl.col('score').fill_null(strategy='mean'),
+)
+
+# ── Drop nulls ────────────────────────────────
+df = df.drop_nulls()                       # drop rows with any null
+df = df.drop_nulls(subset=['age', 'salary'])  # specific columns only
+</code></pre>
+  </div>
+
+  <div class="card polars anchor" id="pl-dropc">
+    <h3>Drop Columns &amp; Concat</h3>
+<pre><code class="language-python">import polars as pl
+
+df1 = pl.read_csv('part1.csv')
+df2 = pl.read_csv('part2.csv')
+
+# ── Drop columns ─────────────────────────────
+df = df1.drop(['col1', 'col2'])
+df = df1.drop('col1')              # single column
+
+# ── Vertical concat (append rows) ────────────
+# Schemas must match (same columns & types)
+combined = pl.concat([df1, df2], how='vertical')
+
+# ── Horizontal concat (append columns) ───────
+combined = pl.concat([df1, df2], how='horizontal')
+
+# ── Diagonal (union schema, nulls for missing) ─
+combined = pl.concat([df1, df2], how='diagonal')
+
+# ── Join on key ──────────────────────────────
+joined = df1.join(df2, on='id', how='inner')
+joined = df1.join(df2, on='id', how='left')
+joined = df1.join(df2, left_on='id', right_on='user_id', how='inner')
+</code></pre>
+  </div>
+
+  <div class="card polars anchor" id="pl-dtypes">
+    <h3>Finding Numeric &amp; Categorical Columns</h3>
+<pre><code class="language-python">import polars as pl
+import polars.selectors as cs  # polars >= 0.19
+
+df = pl.read_csv('data.csv')
+
+# ── Using selectors (recommended) ────────────
+numeric_df   = df.select(cs.numeric())
+string_df    = df.select(cs.string())
+cat_df       = df.select(cs.categorical())
+bool_df      = df.select(cs.boolean())
+datetime_df  = df.select(cs.temporal())
+
+numeric_cols = df.select(cs.numeric()).columns
+cat_cols     = df.select(cs.string() | cs.categorical()).columns
+
+# ── Manual dtype check ────────────────────────
+NUMERIC = (pl.Int8, pl.Int16, pl.Int32, pl.Int64,
+           pl.Float32, pl.Float64, pl.UInt8, pl.UInt16,
+           pl.UInt32, pl.UInt64)
+
+numeric_cols = [c for c, t in zip(df.columns, df.dtypes) if t in NUMERIC]
+cat_cols     = [c for c, t in zip(df.columns, df.dtypes) if t == pl.String]
+
+# ── Schema ────────────────────────────────────
+print(df.schema)         # {'col': dtype, ...}
+print(df.dtypes)         # [dtype, ...]
+</code></pre>
+  </div>
+
+  <div class="card polars anchor" id="pl-iter">
+    <h3>Iteration</h3>
+    <p>Polars strongly encourages vectorised expressions over loops. Use iteration only for debugging or when integrating with non-Polars code.</p>
+<pre><code class="language-python">import polars as pl
+
+df = pl.read_csv('data.csv')
+
+# ── Iterate over column names ─────────────────
+for col_name in df.columns:
+    series = df[col_name]
+    print(col_name, series.dtype)
+
+# ── Iterate over rows as tuples (fast) ────────
+for row in df.iter_rows():
+    print(row)             # (val1, val2, ...)
+
+# ── Iterate over rows as dicts ────────────────
+for row in df.iter_rows(named=True):
+    print(row['age'], row['salary'])
+
+# ── Iterate over slices (batches) ─────────────
+for batch in df.iter_slices(n_rows=100):
+    process(batch)         # batch is a pl.DataFrame
+
+# ── Vectorised alternative to element-wise loop ─
+# Instead of:  for val in df['score']: ...
+# Use:
+result = df.with_columns(
+    (pl.col('price') * pl.col('qty')).alias('total')
+)
+</code></pre>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━ SCIKIT-LEARN MODELS ━━━━━━━━━━━━━━━━ -->
+<section class="section" id="sklearn-models">
+  <div class="section-title">
+    <span class="sklearn-color">Scikit-learn</span>
+    <span class="badge sklearn-badge">models</span>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-split">
+    <h3>Train / Test Split</h3>
+    <p>Split data before any fitting. Never fit preprocessors or models on test data.</p>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>test_size</td><td>Fraction (0–1) or absolute count for test set (default 0.25)</td></tr>
+      <tr><td>random_state</td><td>Seed for reproducibility</td></tr>
+      <tr><td>stratify</td><td>Array to stratify on — preserves class proportions (use for classification)</td></tr>
+      <tr><td>shuffle</td><td>Whether to shuffle before splitting (default True)</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.model_selection import train_test_split
+import numpy as np
+
+X = np.random.rand(1000, 10)
+y = np.random.randint(0, 3, 1000)  # 3-class labels
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,       # 80% train, 20% test
+    random_state=42,
+    stratify=y           # keep class proportions in both splits
+)
+
+print(f"Train: {X_train.shape}  Test: {X_test.shape}")
+# Train: (800, 10)  Test: (200, 10)
+
+# For val set too:
+X_tr, X_temp, y_tr, y_temp = train_test_split(X, y, test_size=0.3, random_state=42, stratify=y)
+X_val, X_te, y_val, y_te   = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42, stratify=y_temp)
+# → 70% train, 15% val, 15% test
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-linreg">
+    <h3>Linear Regression</h3>
+    <p>Fits a linear model $\hat{y} = X\beta + \beta_0$ by minimising mean squared error using OLS (closed-form). Best for continuous targets when the relationship is approximately linear.</p>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>fit_intercept</td><td>Whether to fit bias term $\beta_0$ (default True)</td></tr>
+      <tr><td>n_jobs</td><td>Parallelism for large datasets (default None = 1)</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np
+
+X = np.random.rand(200, 3)
+y = 2*X[:,0] + 3*X[:,1] - X[:,2] + np.random.randn(200)*0.1
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+model = LinearRegression(fit_intercept=True)
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+print(f"Coefficients : {model.coef_}")    # β values
+print(f"Intercept    : {model.intercept_:.4f}")
+print(f"R²           : {r2_score(y_test, y_pred):.4f}")
+print(f"MSE          : {mean_squared_error(y_test, y_pred):.4f}")
+
+# Regularised variants
+from sklearn.linear_model import Ridge, Lasso, ElasticNet
+ridge    = Ridge(alpha=1.0)          # L2 regularisation
+lasso    = Lasso(alpha=0.1)          # L1 regularisation (sparsity)
+elastic  = ElasticNet(alpha=0.1, l1_ratio=0.5)  # L1 + L2
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-logreg">
+    <h3>Logistic Regression</h3>
+    <p>Linear classifier using sigmoid (binary) or softmax (multiclass). Despite the name, it's a classification algorithm. Outputs calibrated probabilities.</p>
+    <div class="formula-box">
+      <p><strong>Binary:</strong> $P(y=1|x) = \sigma(w \cdot x + b) = \dfrac{1}{1+e^{-(w \cdot x + b)}}$</p>
+      <p><strong>Loss:</strong> $-\dfrac{1}{n}\sum_i \left[y_i \log \hat{p}_i + (1-y_i)\log(1-\hat{p}_i)\right]$</p>
+    </div>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>C</td><td>Inverse regularisation strength (smaller = stronger regularisation). Default 1.0</td></tr>
+      <tr><td>penalty</td><td><code>'l1'</code>, <code>'l2'</code> (default), <code>'elasticnet'</code>, <code>None</code></td></tr>
+      <tr><td>solver</td><td>Optimisation algorithm: <code>'lbfgs'</code> (default), <code>'liblinear'</code> (L1), <code>'saga'</code> (large datasets)</td></tr>
+      <tr><td>max_iter</td><td>Max iterations for solver convergence (increase if ConvergenceWarning)</td></tr>
+      <tr><td>multi_class</td><td><code>'auto'</code>, <code>'ovr'</code> (one-vs-rest), <code>'multinomial'</code></td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_iris
+
+X, y = load_iris(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+# Best practice: scale features first
+pipe = make_pipeline(
+    StandardScaler(),
+    LogisticRegression(C=1.0, max_iter=200, random_state=42)
+)
+pipe.fit(X_train, y_train)
+
+y_pred  = pipe.predict(X_test)
+y_proba = pipe.predict_proba(X_test)  # shape (n_samples, n_classes)
+
+model = pipe.named_steps['logisticregression']
+print(f"Coef shape: {model.coef_.shape}")   # (n_classes, n_features)
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-kmeans">
+    <h3>K-Means Clustering</h3>
+    <p>Partitions data into <em>k</em> clusters by iteratively assigning points to the nearest centroid and recomputing centroids. Assumes spherical clusters of similar size.</p>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>n_clusters</td><td>Number of clusters k (required)</td></tr>
+      <tr><td>init</td><td>Centroid init: <code>'k-means++'</code> (smart, default) or <code>'random'</code></td></tr>
+      <tr><td>n_init</td><td>Number of runs with different seeds; best is kept (default 10)</td></tr>
+      <tr><td>max_iter</td><td>Max iterations per run (default 300)</td></tr>
+      <tr><td>random_state</td><td>Seed for reproducibility</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+
+X = np.random.rand(300, 4)
+X = StandardScaler().fit_transform(X)  # always scale for distance-based methods
+
+model = KMeans(n_clusters=3, init='k-means++', n_init=10, random_state=42)
+model.fit(X)
+
+labels   = model.labels_               # cluster index for each sample
+centers  = model.cluster_centers_      # centroid coordinates (k × n_features)
+inertia  = model.inertia_              # sum of squared distances to centroid (lower = tighter)
+
+# Predict cluster for new data
+new_labels = model.predict(X)
+
+# Choosing k — Elbow method
+inertias = []
+for k in range(1, 11):
+    km = KMeans(n_clusters=k, n_init=10, random_state=42)
+    km.fit(X)
+    inertias.append(km.inertia_)
+# Plot inertias vs k and look for the "elbow"
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-dbscan">
+    <h3>DBSCAN Clustering</h3>
+    <p>Density-based clustering — finds clusters of arbitrary shape and labels outliers as noise (<code>-1</code>). Does not require specifying k.</p>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>eps</td><td>Neighbourhood radius: two points are neighbours if distance ≤ eps</td></tr>
+      <tr><td>min_samples</td><td>Min points in eps-neighbourhood to be a core point (default 5)</td></tr>
+      <tr><td>metric</td><td>Distance metric (default <code>'euclidean'</code>)</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+
+X = np.random.rand(300, 2)
+X = StandardScaler().fit_transform(X)
+
+model = DBSCAN(eps=0.5, min_samples=5, metric='euclidean')
+model.fit(X)
+
+labels       = model.labels_               # -1 = noise/outlier
+core_indices = model.core_sample_indices_  # indices of core points
+
+n_clusters  = len(set(labels)) - (1 if -1 in labels else 0)
+n_noise     = list(labels).count(-1)
+print(f"Clusters: {n_clusters},  Noise points: {n_noise}")
+
+# Tip: use k-distance plot to choose eps
+from sklearn.neighbors import NearestNeighbors
+nbrs = NearestNeighbors(n_neighbors=5).fit(X)
+distances, _ = nbrs.kneighbors(X)
+# Sort distances[:, -1] and plot — look for elbow
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-pca">
+    <h3>PCA — Principal Component Analysis</h3>
+    <p>Linear dimensionality reduction. Projects data onto the directions of maximum variance (principal components). Use for visualisation, noise reduction, or speeding up downstream models.</p>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>n_components</td><td>Number of components to keep. Int → exact count; float 0–1 → minimum variance to retain</td></tr>
+      <tr><td>whiten</td><td>Scale components to unit variance (default False)</td></tr>
+      <tr><td>random_state</td><td>Seed (only matters for randomised solver)</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+
+X = np.random.rand(200, 20)
+X = StandardScaler().fit_transform(X)  # scale before PCA
+
+# Keep exactly 2 components
+pca2 = PCA(n_components=2, random_state=42)
+X_2d = pca2.fit_transform(X)
+
+# Keep enough components to explain 95% of variance
+pca95 = PCA(n_components=0.95, random_state=42)
+X_95  = pca95.fit_transform(X)
+
+print(pca2.explained_variance_ratio_)          # variance per component
+print(pca2.explained_variance_ratio_.sum())    # total explained
+print(f"Selected {pca95.n_components_} components for 95% variance")
+
+# Reconstruct (lossy)
+X_reconstructed = pca2.inverse_transform(X_2d)
+
+# Loadings (eigenvectors)
+print(pca2.components_.shape)   # (n_components, n_features)
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-svc">
+    <h3>SVC — Support Vector Classifier</h3>
+    <p>Finds the hyperplane that maximises the margin between classes. The kernel trick allows non-linear boundaries. Effective in high-dimensional spaces; scale features first.</p>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>C</td><td>Regularisation: large C → small margin, fits train closely; small C → large margin, more errors allowed</td></tr>
+      <tr><td>kernel</td><td><code>'rbf'</code> (default, non-linear), <code>'linear'</code>, <code>'poly'</code>, <code>'sigmoid'</code></td></tr>
+      <tr><td>gamma</td><td>RBF/poly/sigmoid kernel coefficient. <code>'scale'</code> = 1/(n_features·var), <code>'auto'</code> = 1/n_features</td></tr>
+      <tr><td>degree</td><td>Degree for polynomial kernel (default 3)</td></tr>
+      <tr><td>probability</td><td>Enable <code>predict_proba</code> (slower; uses cross-val internally)</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_classification
+
+X, y = make_classification(n_samples=500, n_features=10, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Always scale for SVC
+pipe = make_pipeline(
+    StandardScaler(),
+    SVC(C=1.0, kernel='rbf', gamma='scale', probability=True, random_state=42)
+)
+pipe.fit(X_train, y_train)
+
+y_pred  = pipe.predict(X_test)
+y_proba = pipe.predict_proba(X_test)   # requires probability=True
+
+# For regression: SVR
+from sklearn.svm import SVR
+svr = SVR(C=1.0, kernel='rbf', epsilon=0.1)
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-knn">
+    <h3>KNN — K-Nearest Neighbours</h3>
+    <p>Classifies (or regresses) a sample by majority vote (or average) among its k nearest neighbours. Non-parametric — no training, but slow at inference on large datasets.</p>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>n_neighbors</td><td>Number of neighbours k (default 5)</td></tr>
+      <tr><td>weights</td><td><code>'uniform'</code> — equal votes; <code>'distance'</code> — closer neighbours vote more</td></tr>
+      <tr><td>metric</td><td>Distance metric (default <code>'minkowski'</code>)</td></tr>
+      <tr><td>p</td><td>Power for Minkowski: 1 = Manhattan, 2 = Euclidean (default 2)</td></tr>
+      <tr><td>n_jobs</td><td>Parallel jobs for neighbour search</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_iris
+
+X, y = load_iris(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+pipe = make_pipeline(
+    StandardScaler(),    # scale — KNN is distance-sensitive
+    KNeighborsClassifier(n_neighbors=5, weights='distance', n_jobs=-1)
+)
+pipe.fit(X_train, y_train)
+
+y_pred  = pipe.predict(X_test)
+y_proba = pipe.predict_proba(X_test)  # shape (n_samples, n_classes)
+
+# Tune k with cross-validation
+from sklearn.model_selection import cross_val_score
+for k in [3, 5, 7, 11, 15]:
+    scores = cross_val_score(KNeighborsClassifier(n_neighbors=k), X, y, cv=5, scoring='accuracy')
+    print(f"k={k}: {scores.mean():.3f} ± {scores.std():.3f}")
+</code></pre>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━ PREPROCESSING ━━━━━━━━━━━━━━━━ -->
+<section class="section" id="sklearn-prep">
+  <div class="section-title">
+    <span class="sklearn-color">Scikit-learn</span>
+    <span class="badge sklearn-badge">preprocessing</span>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-std">
+    <h3>Standardisation — StandardScaler</h3>
+    <p>Transforms each feature to zero mean and unit standard deviation. Required by many algorithms (SVM, logistic regression, KNN, PCA). Always fit on train set only.</p>
+    <div class="formula-box">
+      <p>$z = \dfrac{x - \mu}{\sigma}$&emsp; where $\mu$ = feature mean, $\sigma$ = feature std dev</p>
+    </div>
+<pre><code class="language-python">from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler(
+    with_mean=True,   # subtract mean (default True)
+    with_std=True     # divide by std  (default True)
+)
+
+X_train_scaled = scaler.fit_transform(X_train)  # fit ON TRAIN, then transform
+X_test_scaled  = scaler.transform(X_test)        # ONLY transform (never fit on test)
+
+print(scaler.mean_)    # per-feature mean (fitted)
+print(scaler.scale_)   # per-feature std  (fitted)
+
+# Inverse transform
+X_original = scaler.inverse_transform(X_train_scaled)
+
+# Best practice: use Pipeline to prevent data leakage
+from sklearn.pipeline import make_pipeline
+pipe = make_pipeline(StandardScaler(), LogisticRegression())
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-norm">
+    <h3>Normalisation</h3>
+    <p>Two different concepts — make sure you pick the right one:</p>
+    <div class="formula-box">
+      <p><strong>MinMaxScaler</strong> (feature scaling): $x' = \dfrac{x - x_{\min}}{x_{\max} - x_{\min}}$ → maps to $[0, 1]$</p>
+      <p><strong>Normalizer</strong> (sample normalisation): scales each <em>row</em> to unit $\ell^p$ norm: $x' = \dfrac{x}{\|x\|_p}$</p>
+    </div>
+<pre><code class="language-python">from sklearn.preprocessing import MinMaxScaler, MaxAbsScaler, Normalizer
+
+# ── MinMaxScaler: scale each feature to [0,1] ──
+mms = MinMaxScaler(feature_range=(0, 1))
+X_mms = mms.fit_transform(X_train)     # fit on train
+X_mms_test = mms.transform(X_test)
+
+# ── MaxAbsScaler: scale by max abs value → [-1,1] ──
+# Good for sparse data (doesn't shift mean)
+mas = MaxAbsScaler()
+X_mas = mas.fit_transform(X_train)
+
+# ── Normalizer: L2-normalise each SAMPLE (row) ──
+# Each row has ||x||₂ = 1 after transformation
+norm = Normalizer(norm='l2')  # 'l1' or 'max' also available
+X_norm = norm.fit_transform(X_train)
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-bin">
+    <h3>Binarization</h3>
+    <p>Thresholds numerical features to binary (0/1). Useful for converting continuous features to binary indicators.</p>
+<pre><code class="language-python">from sklearn.preprocessing import Binarizer
+import numpy as np
+
+X = np.array([[0.3, 1.5, -0.2],
+              [0.8, 0.1,  1.2]])
+
+# Values > threshold → 1, else → 0
+binarizer = Binarizer(threshold=0.5)
+X_bin = binarizer.fit_transform(X)
+# [[0, 1, 0],
+#  [1, 0, 1]]
+
+# Per-column thresholds: use custom logic
+thresholds = [0.5, 0.5, 0.0]
+X_bin_custom = (X > thresholds).astype(int)
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-le">
+    <h3>Label Encoding</h3>
+    <p><code>LabelEncoder</code> encodes the <strong>target</strong> array <em>y</em> as integers 0…(n_classes−1). Do not use it for input features — use OrdinalEncoder or OneHotEncoder instead.</p>
+<pre><code class="language-python">from sklearn.preprocessing import LabelEncoder
+
+le = LabelEncoder()
+
+y = ['cat', 'dog', 'bird', 'cat', 'dog', 'bird']
+y_encoded = le.fit_transform(y)   # [1, 2, 0, 1, 2, 0]
+# classes are sorted alphabetically: 'bird'→0, 'cat'→1, 'dog'→2
+
+print(le.classes_)                # ['bird' 'cat' 'dog']
+
+# Decode back
+y_original = le.inverse_transform(y_encoded)
+
+# Encode new unseen data (must be in original classes)
+le.transform(['dog', 'bird'])     # [2, 0]
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-oe">
+    <h3>Ordinal &amp; Categorical Encoding</h3>
+    <p><code>OrdinalEncoder</code> encodes categorical <strong>features</strong> as ordered integers. Suitable when there is a meaningful order (e.g. low &lt; medium &lt; high). For unordered categories, use OneHotEncoder instead.</p>
+<pre><code class="language-python">from sklearn.preprocessing import OrdinalEncoder
+import numpy as np
+
+X = [['small',  'low'],
+     ['medium', 'high'],
+     ['large',  'medium'],
+     ['small',  'high']]
+
+oe = OrdinalEncoder(
+    categories=[['small','medium','large'], ['low','medium','high']],
+    handle_unknown='use_encoded_value',   # for unseen categories at transform
+    unknown_value=-1
+)
+X_enc = oe.fit_transform(X)
+# [[0., 0.],
+#  [1., 2.],
+#  [2., 1.],
+#  [0., 2.]]
+
+# Decode
+X_orig = oe.inverse_transform(X_enc)
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-ohe">
+    <h3>One-Hot Encoding</h3>
+    <p>Converts each category to a binary vector. Avoids the false ordinal relationship that OrdinalEncoder introduces. For high-cardinality features, consider target encoding or embedding instead.</p>
+<pre><code class="language-python">from sklearn.preprocessing import OneHotEncoder
+import pandas as pd
+import polars as pl
+
+# ── sklearn OneHotEncoder ─────────────────────
+ohe = OneHotEncoder(
+    sparse_output=False,    # return dense array (sparse_output in sklearn≥1.2)
+    drop=None,              # 'first' to avoid multicollinearity in linear models
+    handle_unknown='ignore' # silently ignore unseen categories at transform
+)
+
+X_cat = [['red'], ['blue'], ['green'], ['red']]
+X_enc = ohe.fit_transform(X_cat)
+# [[0,0,1], [1,0,0], [0,1,0], [0,0,1]]  (blue, green, red)
+
+print(ohe.get_feature_names_out(['color']))
+# ['color_blue' 'color_green' 'color_red']
+
+# Reconstruct pandas DataFrame (preserving object)
+df = pd.DataFrame({'color': ['red','blue','green','red'], 'value': [1,2,3,4]})
+enc_arr = ohe.fit_transform(df[['color']])
+enc_df  = pd.DataFrame(enc_arr, columns=ohe.get_feature_names_out(['color']))
+df_full = pd.concat([df.drop('color', axis=1).reset_index(drop=True), enc_df], axis=1)
+
+# ── pandas get_dummies (simpler for pandas DataFrames) ─
+df_dummies = pd.get_dummies(df, columns=['color'], drop_first=False, dtype=float)
+
+# ── polars to_dummies ─────────────────────────
+df_pl = pl.DataFrame({'color': ['red','blue','green','red'], 'value': [1,2,3,4]})
+df_pl_enc = df_pl.to_dummies('color')
+# Concatenate with remaining columns
+df_pl_full = pl.concat([df_pl.drop('color'), df_pl_enc], how='horizontal')
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-impute">
+    <h3>Imputing Missing Values</h3>
+    <p>Replace missing values with a statistic or a constant. Fit only on training data.</p>
+    <table class="params">
+      <tr><th>strategy</th><th>Effect</th></tr>
+      <tr><td>'mean'</td><td>Replace with column mean (numeric only)</td></tr>
+      <tr><td>'median'</td><td>Replace with column median (robust to outliers)</td></tr>
+      <tr><td>'most_frequent'</td><td>Replace with most common value (works for categorical)</td></tr>
+      <tr><td>'constant'</td><td>Replace with fill_value (e.g. 0 or 'Missing')</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.impute import SimpleImputer, KNNImputer
+import numpy as np
+import pandas as pd
+
+X = np.array([[1.,  2., np.nan],
+              [4., np.nan, 6.],
+              [7.,  8.,   9.]])
+
+# ── SimpleImputer ─────────────────────────────
+imp_mean = SimpleImputer(strategy='mean')
+X_imputed = imp_mean.fit_transform(X)
+
+# For categorical (string) data
+imp_freq = SimpleImputer(strategy='most_frequent')
+
+# Constant fill
+imp_const = SimpleImputer(strategy='constant', fill_value=0)
+
+# ── KNNImputer: uses k-nearest neighbour average ──
+knn_imp = KNNImputer(n_neighbors=5)
+X_knn = knn_imp.fit_transform(X)
+
+# ── Works directly on pandas DataFrames ──────
+df = pd.DataFrame({'age': [25, np.nan, 35, 40], 'salary': [50000, 60000, np.nan, 80000]})
+imp = SimpleImputer(strategy='median')
+df_imp = pd.DataFrame(imp.fit_transform(df), columns=df.columns)
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-poly">
+    <h3>Polynomial Features</h3>
+    <p>Generates polynomial and interaction terms from features. Useful for capturing non-linear relationships with linear models.</p>
+    <div class="formula-box">
+      <p>For features $[a, b]$ with degree=2: $[1, a, b, a^2, ab, b^2]$</p>
+      <p>Feature count grows as $\binom{n+d}{d}$ where $n$ = input features, $d$ = degree.</p>
+    </div>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>degree</td><td>Polynomial degree (default 2)</td></tr>
+      <tr><td>interaction_only</td><td>Only cross-terms, no $x^2$ terms (default False)</td></tr>
+      <tr><td>include_bias</td><td>Include column of 1s (bias/intercept term) (default True)</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import make_pipeline
+import numpy as np
+
+X = np.array([[1, 2], [3, 4], [5, 6]])
+
+poly = PolynomialFeatures(degree=2, include_bias=True)
+X_poly = poly.fit_transform(X)
+
+print(poly.get_feature_names_out(['a', 'b']))
+# ['1', 'a', 'b', 'a^2', 'a b', 'b^2']
+print(f"{X.shape[1]} features → {X_poly.shape[1]} features")
+
+# Polynomial regression pipeline
+model = make_pipeline(
+    PolynomialFeatures(degree=2, include_bias=False),
+    LinearRegression()
+)
+</code></pre>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━ METRICS ━━━━━━━━━━━━━━━━ -->
+<section class="section" id="sklearn-metrics">
+  <div class="section-title">
+    <span class="sklearn-color">Scikit-learn</span>
+    <span class="badge sklearn-badge">metrics</span>
+  </div>
+
+  <!-- Classification Metrics -->
+  <div class="card sklearn anchor" id="sk-clf-metrics">
+    <h3>Classification Metrics</h3>
+    <p>Notation: TP = true positives, TN = true negatives, FP = false positives, FN = false negatives.</p>
+    <div class="metric-grid">
+      <div class="metric-card">
+        <span class="tag tag-clf">Classification</span>
+        <h4>Accuracy</h4>
+        <div class="formula-box">$\dfrac{TP+TN}{TP+TN+FP+FN}$</div>
+        <p style="font-size:.8rem">Proportion of correct predictions. Misleading on imbalanced datasets.</p>
+        <code style="font-size:.75rem">accuracy_score(y_true, y_pred)</code>
+      </div>
+      <div class="metric-card">
+        <span class="tag tag-clf">Classification</span>
+        <h4>Precision</h4>
+        <div class="formula-box">$\dfrac{TP}{TP+FP}$</div>
+        <p style="font-size:.8rem">Of all predicted positives, how many are actually positive. High precision = few false alarms.</p>
+        <code style="font-size:.75rem">precision_score(y_true, y_pred)</code>
+      </div>
+      <div class="metric-card">
+        <span class="tag tag-clf">Classification</span>
+        <h4>Recall (Sensitivity)</h4>
+        <div class="formula-box">$\dfrac{TP}{TP+FN}$</div>
+        <p style="font-size:.8rem">Of all actual positives, how many did we catch. High recall = few missed positives.</p>
+        <code style="font-size:.75rem">recall_score(y_true, y_pred)</code>
+      </div>
+      <div class="metric-card">
+        <span class="tag tag-clf">Classification</span>
+        <h4>F1-Score</h4>
+        <div class="formula-box">$\dfrac{2 \cdot P \cdot R}{P + R} = \dfrac{2\,TP}{2\,TP+FP+FN}$</div>
+        <p style="font-size:.8rem">Harmonic mean of precision and recall. Good single metric for imbalanced data.</p>
+        <code style="font-size:.75rem">f1_score(y_true, y_pred)</code>
+      </div>
+      <div class="metric-card">
+        <span class="tag tag-clf">Classification</span>
+        <h4>ROC-AUC</h4>
+        <div class="formula-box" style="font-size:.8rem">Area under TPR vs FPR curve.<br>$TPR = \tfrac{TP}{TP+FN}$, $FPR = \tfrac{FP}{FP+TN}$</div>
+        <p style="font-size:.8rem">1.0 = perfect, 0.5 = random. Requires probability scores, not class labels.</p>
+        <code style="font-size:.75rem">roc_auc_score(y_true, y_score)</code>
+      </div>
+    </div>
+<pre><code class="language-python">from sklearn.metrics import (
+    accuracy_score, precision_score, recall_score,
+    f1_score, roc_auc_score,
+    classification_report, confusion_matrix, ConfusionMatrixDisplay
+)
+import matplotlib.pyplot as plt
+
+# Binary classification
+print(f"Accuracy : {accuracy_score(y_test, y_pred):.4f}")
+print(f"Precision: {precision_score(y_test, y_pred):.4f}")          # binary default
+print(f"Recall   : {recall_score(y_test, y_pred):.4f}")
+print(f"F1       : {f1_score(y_test, y_pred):.4f}")
+print(f"ROC-AUC  : {roc_auc_score(y_test, y_proba[:,1]):.4f}")      # probability of positive class
+
+# Multiclass — average parameter
+# 'macro':    unweighted mean across classes (treats all classes equally)
+# 'weighted': weighted by support (number of true instances per class)
+# 'micro':    aggregate TP/FP/FN globally
+print(precision_score(y_test, y_pred, average='macro'))
+print(recall_score(y_test, y_pred, average='weighted'))
+print(f1_score(y_test, y_pred, average='macro'))
+
+# ROC-AUC for multiclass
+print(roc_auc_score(y_test, y_proba, multi_class='ovr', average='macro'))
+
+# ── Full report ───────────────────────────────
+print(classification_report(y_test, y_pred, target_names=['class_0','class_1','class_2']))
+
+# ── Confusion matrix ──────────────────────────
+cm = confusion_matrix(y_test, y_pred)
+print(cm)
+# [[ TN  FP ]
+#  [ FN  TP ]]   (binary)
+
+# Visualise
+disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+disp.plot(cmap='Blues')
+plt.show()
+</code></pre>
+  </div>
+
+  <!-- Regression Metrics -->
+  <div class="card sklearn anchor" id="sk-reg-metrics">
+    <h3>Regression Metrics</h3>
+    <div class="metric-grid">
+      <div class="metric-card">
+        <span class="tag tag-reg">Regression</span>
+        <h4>MAE — Mean Absolute Error</h4>
+        <div class="formula-box">$\dfrac{1}{n}\sum_{i=1}^{n}|y_i - \hat{y}_i|$</div>
+        <p style="font-size:.8rem">Robust to outliers. Same unit as target. Easy to interpret.</p>
+        <code style="font-size:.75rem">mean_absolute_error(y_true, y_pred)</code>
+      </div>
+      <div class="metric-card">
+        <span class="tag tag-reg">Regression</span>
+        <h4>MSE — Mean Squared Error</h4>
+        <div class="formula-box">$\dfrac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2$</div>
+        <p style="font-size:.8rem">Penalises large errors heavily. Unit is target². Take sqrt for RMSE.</p>
+        <code style="font-size:.75rem">mean_squared_error(y_true, y_pred)</code>
+      </div>
+      <div class="metric-card">
+        <span class="tag tag-reg">Regression</span>
+        <h4>R² — Coefficient of Determination</h4>
+        <div class="formula-box">$1 - \dfrac{SS_{res}}{SS_{tot}} = 1 - \dfrac{\sum(y_i-\hat{y}_i)^2}{\sum(y_i-\bar{y})^2}$</div>
+        <p style="font-size:.8rem">1.0 = perfect fit; 0.0 = predicts mean; negative = worse than predicting mean.</p>
+        <code style="font-size:.75rem">r2_score(y_true, y_pred)</code>
+      </div>
+    </div>
+<pre><code class="language-python">from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import numpy as np
+
+mae  = mean_absolute_error(y_test, y_pred)
+mse  = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)                          # Root MSE
+r2   = r2_score(y_test, y_pred)
+
+print(f"MAE  : {mae:.4f}")
+print(f"MSE  : {mse:.4f}")
+print(f"RMSE : {rmse:.4f}")
+print(f"R²   : {r2:.4f}")
+
+# MAPE (Mean Absolute Percentage Error)
+from sklearn.metrics import mean_absolute_percentage_error
+mape = mean_absolute_percentage_error(y_test, y_pred)
+print(f"MAPE : {mape*100:.2f}%")
+</code></pre>
+  </div>
+
+  <!-- Clustering Metrics -->
+  <div class="card sklearn anchor" id="sk-clu-metrics">
+    <h3>Clustering Metrics</h3>
+    <p>For clustering metrics that require ground-truth labels: use when you have labelled data to evaluate cluster quality. Silhouette and Davies-Bouldin work without labels.</p>
+    <div class="metric-grid">
+      <div class="metric-card">
+        <span class="tag tag-clu">Clustering</span>
+        <h4>Adjusted Rand Score</h4>
+        <div class="formula-box" style="font-size:.78rem">$ARI = \dfrac{RI - E[RI]}{\max(RI) - E[RI]}$</div>
+        <p style="font-size:.8rem">Adjusted for chance: 1.0 = identical, 0.0 = random, can be negative. Symmetric.</p>
+        <code style="font-size:.75rem">adjusted_rand_score(labels_true, labels_pred)</code>
+      </div>
+      <div class="metric-card">
+        <span class="tag tag-clu">Clustering</span>
+        <h4>Homogeneity</h4>
+        <div class="formula-box" style="font-size:.78rem">Each cluster contains only members of one class.<br>$h = 1 - H(C|K)/H(C)$</div>
+        <p style="font-size:.8rem">Range [0,1]. High = clusters are "pure".</p>
+        <code style="font-size:.75rem">homogeneity_score(labels_true, labels_pred)</code>
+      </div>
+      <div class="metric-card">
+        <span class="tag tag-clu">Clustering</span>
+        <h4>V-Measure</h4>
+        <div class="formula-box" style="font-size:.78rem">$V_\beta = \dfrac{(1+\beta^2) \cdot h \cdot c}{\beta^2 \cdot h + c}$</div>
+        <p style="font-size:.8rem">Harmonic mean of homogeneity (h) and completeness (c). β weights completeness.</p>
+        <code style="font-size:.75rem">v_measure_score(labels_true, labels_pred)</code>
+      </div>
+    </div>
+<pre><code class="language-python">from sklearn.metrics import (
+    adjusted_rand_score, rand_score,
+    homogeneity_score, completeness_score,
+    v_measure_score, homogeneity_completeness_v_measure,
+    silhouette_score, davies_bouldin_score
+)
+
+labels_true = [0, 0, 1, 1, 2, 2]
+labels_pred = [0, 0, 1, 2, 2, 2]
+
+# ── With ground truth ──────────────────────────
+print(f"ARI        : {adjusted_rand_score(labels_true, labels_pred):.4f}")
+print(f"Rand       : {rand_score(labels_true, labels_pred):.4f}")
+print(f"Homogeneity: {homogeneity_score(labels_true, labels_pred):.4f}")
+print(f"Completeness: {completeness_score(labels_true, labels_pred):.4f}")
+print(f"V-Measure  : {v_measure_score(labels_true, labels_pred):.4f}")
+
+# All three at once
+h, c, v = homogeneity_completeness_v_measure(labels_true, labels_pred)
+print(f"h={h:.3f}, c={c:.3f}, v={v:.3f}")
+
+# ── Without ground truth ──────────────────────
+# Silhouette: [-1,1], higher = better separated
+sil = silhouette_score(X, labels_pred)
+
+# Davies-Bouldin: lower = better
+db  = davies_bouldin_score(X, labels_pred)
+</code></pre>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━ MODEL SELECTION ━━━━━━━━━━━━━━━━ -->
+<section class="section" id="sklearn-selection">
+  <div class="section-title">
+    <span class="sklearn-color">Scikit-learn</span>
+    <span class="badge sklearn-badge">model selection</span>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-cv">
+    <h3>Cross-Validation</h3>
+    <p>Evaluate model performance on multiple train/val splits. More reliable than a single train/test split. <strong>Never fit preprocessors outside the cross-validation loop</strong> — use Pipelines.</p>
+
+    <h4 style="margin-top:.8rem;margin-bottom:.4rem;font-size:.9rem;">Scoring strings for cross_val_score / GridSearchCV</h4>
+    <table class="scoring-table">
+      <tr><th>Metric</th><th>Binary scoring</th><th>Multiclass scoring</th><th>Notes</th></tr>
+      <tr><td>Accuracy</td><td colspan="2"><code>'accuracy'</code></td><td>–</td></tr>
+      <tr><td>Precision</td><td><code>'precision'</code></td><td><code>'precision_macro'</code> / <code>'precision_weighted'</code></td><td>–</td></tr>
+      <tr><td>Recall</td><td><code>'recall'</code></td><td><code>'recall_macro'</code> / <code>'recall_weighted'</code></td><td>–</td></tr>
+      <tr><td>F1</td><td><code>'f1'</code></td><td><code>'f1_macro'</code> / <code>'f1_weighted'</code> / <code>'f1_micro'</code></td><td>–</td></tr>
+      <tr><td>ROC-AUC</td><td><code>'roc_auc'</code></td><td><code>'roc_auc_ovr'</code> / <code>'roc_auc_ovo'</code></td><td>Needs <code>predict_proba</code></td></tr>
+      <tr><td>MAE</td><td colspan="2"><code>'neg_mean_absolute_error'</code></td><td>Negated — negate result to get MAE</td></tr>
+      <tr><td>MSE</td><td colspan="2"><code>'neg_mean_squared_error'</code></td><td>Negated — negate result to get MSE</td></tr>
+      <tr><td>R²</td><td colspan="2"><code>'r2'</code></td><td>–</td></tr>
+    </table>
+
+<pre><code class="language-python">from sklearn.model_selection import cross_val_score, cross_validate, StratifiedKFold
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+import numpy as np
+
+X, y = load_iris(return_X_y=True)
+
+pipe = make_pipeline(StandardScaler(), LogisticRegression(max_iter=200))
+
+# ── Simple CV — one metric ─────────────────────
+scores = cross_val_score(pipe, X, y, cv=5, scoring='accuracy')
+print(f"Accuracy: {scores.mean():.3f} ± {scores.std():.3f}")
+
+# ── StratifiedKFold: preserves class proportions (use for classification) ──
+skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+scores = cross_val_score(pipe, X, y, cv=skf, scoring='f1_macro')
+
+# ── Multiple metrics at once ──────────────────
+results = cross_validate(
+    pipe, X, y,
+    cv=skf,
+    scoring=['accuracy', 'f1_macro', 'roc_auc_ovr'],
+    return_train_score=True,
+    n_jobs=-1
+)
+for key, vals in results.items():
+    if key.startswith('test_'):
+        print(f"{key}: {vals.mean():.3f} ± {vals.std():.3f}")
+
+# ── Regression CV ─────────────────────────────
+from sklearn.linear_model import LinearRegression
+from sklearn.datasets import make_regression
+from sklearn.model_selection import KFold
+
+X_r, y_r = make_regression(n_samples=200, n_features=5, noise=10, random_state=42)
+kf = KFold(n_splits=5, shuffle=True, random_state=42)
+
+mae_scores = cross_val_score(LinearRegression(), X_r, y_r, cv=kf,
+                              scoring='neg_mean_absolute_error')
+print(f"MAE: {-mae_scores.mean():.3f}")    # negate to get positive MAE
+r2_scores = cross_val_score(LinearRegression(), X_r, y_r, cv=kf, scoring='r2')
+print(f"R² : {r2_scores.mean():.3f}")
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-grid">
+    <h3>GridSearchCV</h3>
+    <p>Exhaustive search over all combinations of a parameter grid. Best when the grid is small. Uses cross-validation to evaluate each combination. Automatically retrains on all data with best params.</p>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>estimator</td><td>Model (or Pipeline) to tune</td></tr>
+      <tr><td>param_grid</td><td>Dict or list of dicts: param_name → list of values</td></tr>
+      <tr><td>cv</td><td>Number of folds or a CV splitter object</td></tr>
+      <tr><td>scoring</td><td>Metric string or callable to optimise (see scoring table)</td></tr>
+      <tr><td>n_jobs</td><td>Parallel workers (-1 = all CPUs)</td></tr>
+      <tr><td>refit</td><td>If True, refit best model on whole dataset (default True)</td></tr>
+      <tr><td>verbose</td><td>Verbosity level (0 = silent, 2 = detailed)</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.model_selection import GridSearchCV, StratifiedKFold
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+import pandas as pd
+
+pipe = Pipeline([
+    ('scaler', StandardScaler()),
+    ('svc',    SVC(probability=True, random_state=42))
+])
+
+# Prefix pipeline step name with __ to target its params
+param_grid = {
+    'svc__C':      [0.1, 1, 10, 100],
+    'svc__kernel': ['rbf', 'linear'],
+    'svc__gamma':  ['scale', 'auto', 0.01],
+}
+
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+gs = GridSearchCV(
+    pipe,
+    param_grid,
+    cv=cv,
+    scoring='f1_macro',
+    n_jobs=-1,
+    verbose=1,
+    refit=True
+)
+gs.fit(X_train, y_train)
+
+print(f"Best params : {gs.best_params_}")
+print(f"Best CV F1  : {gs.best_score_:.4f}")
+
+best_model = gs.best_estimator_          # already fitted on full train set
+y_pred     = gs.predict(X_test)
+
+# Explore all results
+results_df = pd.DataFrame(gs.cv_results_).sort_values('rank_test_score')
+print(results_df[['params', 'mean_test_score', 'std_test_score']].head(5))
+</code></pre>
+  </div>
+
+  <div class="card sklearn anchor" id="sk-rand">
+    <h3>RandomizedSearchCV</h3>
+    <p>Samples <em>n_iter</em> random combinations from the parameter distributions. Much faster than GridSearchCV when the grid is large. Use continuous distributions (scipy) for numeric params.</p>
+    <table class="params">
+      <tr><th>Parameter</th><th>Description</th></tr>
+      <tr><td>param_distributions</td><td>Dict: param_name → list or scipy distribution</td></tr>
+      <tr><td>n_iter</td><td>Number of random combinations to try</td></tr>
+      <tr><td>random_state</td><td>Seed for reproducibility of sampling</td></tr>
+    </table>
+<pre><code class="language-python">from sklearn.model_selection import RandomizedSearchCV, StratifiedKFold
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from scipy.stats import randint, uniform
+import pandas as pd
+
+pipe = Pipeline([
+    ('scaler', StandardScaler()),
+    ('rf',     RandomForestClassifier(random_state=42))
+])
+
+# scipy distributions: randint(low, high) → integers in [low, high)
+#                      uniform(loc, scale) → floats in [loc, loc+scale]
+param_dist = {
+    'rf__n_estimators':      randint(50, 500),
+    'rf__max_depth':         randint(2, 30),
+    'rf__min_samples_split': randint(2, 20),
+    'rf__min_samples_leaf':  randint(1, 10),
+    'rf__max_features':      ['sqrt', 'log2', None],
+    'rf__max_samples':       uniform(0.5, 0.5),   # bagging fraction [0.5, 1.0]
+}
+
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+rs = RandomizedSearchCV(
+    pipe,
+    param_distributions=param_dist,
+    n_iter=100,          # sample 100 combinations
+    cv=cv,
+    scoring='f1_macro',
+    n_jobs=-1,
+    random_state=42,
+    verbose=1,
+    refit=True
+)
+rs.fit(X_train, y_train)
+
+print(f"Best params: {rs.best_params_}")
+print(f"Best CV F1 : {rs.best_score_:.4f}")
+
+best_model = rs.best_estimator_
+y_pred     = rs.predict(X_test)
+
+# Compare top candidates
+results_df = pd.DataFrame(rs.cv_results_).sort_values('rank_test_score')
+print(results_df[['params', 'mean_test_score']].head(10))
+</code></pre>
+  </div>
+</section>
+
+</main>
+
+<script>
+// Syntax highlighting
+document.addEventListener('DOMContentLoaded', () => {
+  hljs.highlightAll();
+
+  // Active nav link on scroll
+  const anchors = document.querySelectorAll('.anchor');
+  const navLinks = document.querySelectorAll('#sidebar a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const id = entry.target.id;
+        const link = document.querySelector(`#sidebar a[href="#${id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-10% 0px -80% 0px' });
+
+  anchors.forEach(a => observer.observe(a));
+
+  // Smooth scroll for nav links
+  navLinks.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+});
+</script>
+</body>
+</html>
