@@ -229,153 +229,244 @@
     #sidebar { display: none; }
     #main { margin-left: 0; padding: 1rem; }
   }
+
+  /* ─── Sidebar logo ─── */
+  .sidebar-logo {
+    display: flex; align-items: center; gap: .6rem;
+    padding: 1rem 1.2rem .85rem;
+    border-bottom: 1px solid #2e2015;
+  }
+  .sidebar-logo img {
+    width: 38px; height: 38px; border-radius: 7px; object-fit: cover; flex-shrink: 0;
+  }
+  .sidebar-logo-text {
+    font-size: .82rem; font-weight: 700; color: #f5ede0; letter-spacing: .3px; line-height: 1.3;
+  }
+
+  /* ─── Collapsible nav sections ─── */
+  .nav-section-toggle {
+    padding: .55rem 1.2rem;
+    font-size: .76rem; font-weight: 800;
+    color: #c8a87a; letter-spacing: 1px; text-transform: uppercase;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: .35rem;
+    background: #251a0f;
+    user-select: none;
+    border-left: 3px solid #3a2818;
+  }
+  .nav-section-toggle:hover { background: #2e2015; color: #f0d8b0; }
+  .nav-section-toggle .chev { font-size: .6rem; transition: transform .2s; }
+  .nav-section-toggle.closed .chev { transform: rotate(-90deg); }
+  .nav-section-body { overflow: hidden; }
+  .nav-section-body.closed { display: none; }
+
+  /* ─── Banner ─── */
+  .banner {
+    background: #fffbef;
+    border: 1px solid #e2d09a;
+    border-radius: var(--radius);
+    padding: .85rem 1.2rem;
+    margin-bottom: 2.2rem;
+    font-size: .86rem;
+    color: #4a3520;
+    line-height: 1.65;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .banner img {
+    width: 54px; height: 54px; border-radius: 8px; object-fit: cover; flex-shrink: 0;
+  }
+  .banner a { color: var(--math); font-weight: 600; }
 </style>
 </head>
 <body>
 
 <!-- ══════════════════ SIDEBAR ══════════════════ -->
 <nav id="sidebar">
-  <div class="sidebar-title">Data Analysis Cheatsheet + Lectures</div>
-
-  <div class="nav-group">
-    <div class="nav-group-header math"><span class="dot"></span>Math</div>
-    <div class="nav-items">
-      <a href="#math-probability">Probability</a>
-      <a href="#math-linear-algebra">Linear Algebra</a>
-    </div>
+  <div class="sidebar-logo">
+    <img src="mop-macaque.png" alt="logo">
+    <span class="sidebar-logo-text">Data Analysis<br>Cheatsheet</span>
   </div>
 
-  <div class="nav-group">
-    <div class="nav-group-header stats"><span class="dot"></span>Statistics</div>
-    <div class="nav-items">
-      <a href="#stats-basics">Data &amp; Variables</a>
-      <a href="#stats-distributions">Distributions</a>
-      <a href="#stats-visualization">Visualization Choice</a>
-      <a href="#stats-hypothesis">Hypotheses &amp; Correlation</a>
-    </div>
+  <!-- ── THEORY section ── -->
+  <div class="nav-section-toggle" onclick="toggleNav('theory-nav', this)">
+    <span>Theory</span>
+    <span class="chev">▼</span>
   </div>
+  <div class="nav-section-body" id="theory-nav">
 
-  <div class="nav-group">
-    <div class="nav-group-header theory"><span class="dot"></span>ML Theory</div>
-    <div class="nav-items">
-      <a href="#ml-task-map">Task Types</a>
-      <a href="#ml-losses">Losses &amp; Metrics</a>
-      <a href="#ml-overfit">Overfitting</a>
-      <a href="#ml-gradient">Gradient Descent</a>
-      <a href="#ml-ensembles">Trees &amp; Ensembles</a>
-      <a href="#ml-text-image">Text &amp; Images</a>
-      <a href="#ml-deep-learning">Deep Learning</a>
+    <div class="nav-group">
+      <div class="nav-group-header math"><span class="dot"></span>Math</div>
+      <div class="nav-items">
+        <a href="#math-probability">Probability</a>
+        <a href="#math-linear-algebra">Linear Algebra</a>
+      </div>
     </div>
-  </div>
 
-
-  <div class="nav-group">
-    <div class="nav-group-header theory"><span class="dot"></span>Lecture Core</div>
-    <div class="nav-items">
-      <a href="#lec-ml-pipeline">ML Setup &amp; Pipeline</a>
-      <a href="#lec-linreg-deep">Linear Regression Deep Dive</a>
-      <a href="#lec-optim-reg">Optimisation &amp; Regularisation</a>
-      <a href="#lec-linclass-svm">Linear Classification &amp; SVM</a>
-      <a href="#lec-ranking-metrics">Ranking Metrics</a>
-      <a href="#lec-knn-distances">KNN &amp; Distances</a>
-      <a href="#lec-tree-theory">Decision Tree Theory</a>
-      <a href="#lec-bagging-rf">Bagging &amp; Random Forest</a>
-      <a href="#lec-gb-xgb">Boosting, XGBoost &amp; Stacking</a>
-      <a href="#lec-exam-traps">Exam Traps</a>
+    <div class="nav-group">
+      <div class="nav-group-header stats"><span class="dot"></span>Statistics</div>
+      <div class="nav-items">
+        <a href="#stats-basics">Data &amp; Variables</a>
+        <a href="#stats-distributions">Distributions</a>
+        <a href="#stats-visualization">Visualization Choice</a>
+        <a href="#stats-hypothesis">Hypotheses, Errors &amp; Correlation</a>
+      </div>
     </div>
-  </div>
 
-  <div class="nav-group">
-    <div class="nav-group-header numpy"><span class="dot"></span>NumPy</div>
-    <div class="nav-items">
-      <a href="#np-create">Array Creation</a>
-      <a href="#np-random">Random Arrays</a>
-      <a href="#np-cumsum">Prefix Sum</a>
-      <a href="#np-median">Median</a>
-      <a href="#np-stack">Stacking &amp; Concat</a>
+    <div class="nav-group">
+      <div class="nav-group-header theory"><span class="dot"></span>ML Theory</div>
+      <div class="nav-items">
+        <a href="#ml-task-map">Task Types</a>
+        <a href="#ml-losses">Losses &amp; Metrics</a>
+        <a href="#ml-overfit">Overfitting</a>
+        <a href="#ml-gradient">Gradient Descent</a>
+        <a href="#ml-ensembles">Trees &amp; Ensembles</a>
+        <a href="#ml-text-image">Text &amp; Images</a>
+        <a href="#ml-deep-learning">Deep Learning</a>
+      </div>
     </div>
-  </div>
 
-  <div class="nav-group">
-    <div class="nav-group-header pandas"><span class="dot"></span>Pandas</div>
-    <div class="nav-items">
-      <a href="#pd-csv">Loading CSV</a>
-      <a href="#pd-columns">Column Operations</a>
-      <a href="#pd-filter">Filtering</a>
-      <a href="#pd-agg">Aggregation &amp; Correlation</a>
-      <a href="#pd-nan">Handling NaNs</a>
-      <a href="#pd-dropc">Drop &amp; Concat</a>
-      <a href="#pd-dtypes">Numeric/Categorical Cols</a>
-      <a href="#pd-iter">Iteration</a>
+    <div class="nav-group">
+      <div class="nav-group-header theory"><span class="dot"></span>Lecture Core</div>
+      <div class="nav-items">
+        <a href="#lec-ml-pipeline">ML Setup &amp; Pipeline</a>
+        <a href="#lec-linreg-deep">Linear Regression Deep Dive</a>
+        <a href="#lec-optim-reg">Optimisation &amp; Regularisation</a>
+        <a href="#lec-linclass-svm">Linear Classification &amp; SVM</a>
+        <a href="#lec-ranking-metrics">Ranking Metrics</a>
+        <a href="#lec-knn-distances">KNN &amp; Distances</a>
+        <a href="#lec-tree-theory">Decision Tree Theory</a>
+        <a href="#lec-bagging-rf">Bagging &amp; Random Forest</a>
+        <a href="#lec-gb-xgb">Boosting, XGBoost &amp; Stacking</a>
+        <a href="#lec-exam-traps">Exam Traps</a>
+      </div>
     </div>
-  </div>
 
-  <div class="nav-group">
-    <div class="nav-group-header polars"><span class="dot"></span>Polars</div>
-    <div class="nav-items">
-      <a href="#pl-csv">Loading CSV</a>
-      <a href="#pl-columns">Column Operations</a>
-      <a href="#pl-filter">Filtering</a>
-      <a href="#pl-null">Handling Nulls</a>
-      <a href="#pl-dropc">Drop &amp; Concat</a>
-      <a href="#pl-dtypes">Numeric/Categorical Cols</a>
-      <a href="#pl-iter">Iteration</a>
-    </div>
-  </div>
+  </div><!-- /theory-nav -->
 
-  <div class="nav-group">
-    <div class="nav-group-header sklearn"><span class="dot"></span>Scikit-learn — Models</div>
-    <div class="nav-items">
-      <a href="#sk-split">Train/Test Split</a>
-      <a href="#sk-linreg">Linear Regression</a>
-      <a href="#sk-logreg">Logistic Regression</a>
-      <a href="#sk-kmeans">K-Means</a>
-      <a href="#sk-dbscan">DBSCAN</a>
-      <a href="#sk-pca">PCA</a>
-      <a href="#sk-svc">SVC</a>
-      <a href="#sk-knn">KNN</a>
-      <a href="#sk-tree">Decision Tree</a>
-      <a href="#sk-forest">Random Forest</a>
-      <a href="#sk-gb">Gradient Boosting</a>
-    </div>
+  <!-- ── CODE section ── -->
+  <div class="nav-section-toggle" onclick="toggleNav('code-nav', this)">
+    <span>Code</span>
+    <span class="chev">▼</span>
   </div>
+  <div class="nav-section-body" id="code-nav">
 
-  <div class="nav-group">
-    <div class="nav-group-header sklearn"><span class="dot"></span>Scikit-learn — Preprocessing</div>
-    <div class="nav-items">
-      <a href="#sk-std">Standardization</a>
-      <a href="#sk-norm">Normalization</a>
-      <a href="#sk-bin">Binarization</a>
-      <a href="#sk-le">Label Encoding</a>
-      <a href="#sk-oe">Ordinal Encoding</a>
-      <a href="#sk-ohe">One-Hot Encoding</a>
-      <a href="#sk-impute">Imputing</a>
-      <a href="#sk-poly">Polynomial Features</a>
-      <a href="#sk-pipeline-full">Full Pipeline</a>
+    <div class="nav-group">
+      <div class="nav-group-header numpy"><span class="dot"></span>NumPy</div>
+      <div class="nav-items">
+        <a href="#np-create">Array Creation</a>
+        <a href="#np-random">Random Arrays</a>
+        <a href="#np-cumsum">Prefix Sum</a>
+        <a href="#np-median">Median</a>
+        <a href="#np-stack">Stacking &amp; Concat</a>
+        <a href="#np-correlation">Correlation</a>
+      </div>
     </div>
-  </div>
 
-  <div class="nav-group">
-    <div class="nav-group-header sklearn"><span class="dot"></span>Scikit-learn — Metrics</div>
-    <div class="nav-items">
-      <a href="#sk-clf-metrics">Classification Metrics</a>
-      <a href="#sk-reg-metrics">Regression Metrics</a>
-      <a href="#sk-clu-metrics">Clustering Metrics</a>
+    <div class="nav-group">
+      <div class="nav-group-header pandas"><span class="dot"></span>Pandas</div>
+      <div class="nav-items">
+        <a href="#pd-csv">Loading CSV</a>
+        <a href="#pd-columns">Column Operations</a>
+        <a href="#pd-filter">Filtering</a>
+        <a href="#pd-agg">Aggregation &amp; Correlation</a>
+        <a href="#pd-nan">Handling NaNs</a>
+        <a href="#pd-dropc">Drop &amp; Concat</a>
+        <a href="#pd-dtypes">Numeric/Categorical Cols</a>
+        <a href="#pd-iter">Iteration</a>
+      </div>
     </div>
-  </div>
 
-  <div class="nav-group">
-    <div class="nav-group-header sklearn"><span class="dot"></span>Scikit-learn — Model Selection</div>
-    <div class="nav-items">
-      <a href="#sk-cv">Cross-Validation</a>
-      <a href="#sk-grid">GridSearchCV</a>
-      <a href="#sk-rand">RandomizedSearchCV</a>
+    <div class="nav-group">
+      <div class="nav-group-header polars"><span class="dot"></span>Polars</div>
+      <div class="nav-items">
+        <a href="#pl-csv">Loading CSV</a>
+        <a href="#pl-columns">Column Operations</a>
+        <a href="#pl-filter">Filtering</a>
+        <a href="#pl-null">Handling Nulls</a>
+        <a href="#pl-dropc">Drop &amp; Concat</a>
+        <a href="#pl-dtypes">Numeric/Categorical Cols</a>
+        <a href="#pl-iter">Iteration</a>
+      </div>
     </div>
-  </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header sklearn"><span class="dot"></span>Scikit-learn — Models</div>
+      <div class="nav-items">
+        <a href="#sk-split">Train/Test Split</a>
+        <a href="#sk-linreg">Linear Regression</a>
+        <a href="#sk-logreg">Logistic Regression</a>
+        <a href="#sk-kmeans">K-Means</a>
+        <a href="#sk-dbscan">DBSCAN</a>
+        <a href="#sk-pca">PCA</a>
+        <a href="#sk-svc">SVC</a>
+        <a href="#sk-knn">KNN</a>
+        <a href="#sk-tree">Decision Tree</a>
+        <a href="#sk-forest">Random Forest</a>
+        <a href="#sk-gb">Gradient Boosting</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header sklearn"><span class="dot"></span>Scikit-learn — Preprocessing</div>
+      <div class="nav-items">
+        <a href="#sk-std">Standardization</a>
+        <a href="#sk-norm">Normalization</a>
+        <a href="#sk-bin">Binarization</a>
+        <a href="#sk-le">Label Encoding</a>
+        <a href="#sk-oe">Ordinal Encoding</a>
+        <a href="#sk-ohe">One-Hot Encoding</a>
+        <a href="#sk-impute">Imputing</a>
+        <a href="#sk-poly">Polynomial Features</a>
+        <a href="#sk-pipeline-full">Full Pipeline</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header sklearn"><span class="dot"></span>Scikit-learn — Metrics</div>
+      <div class="nav-items">
+        <a href="#sk-clf-metrics">Classification Metrics</a>
+        <a href="#sk-reg-metrics">Regression Metrics</a>
+        <a href="#sk-clu-metrics">Clustering Metrics</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header sklearn"><span class="dot"></span>Scikit-learn — Model Selection</div>
+      <div class="nav-items">
+        <a href="#sk-cv">Cross-Validation</a>
+        <a href="#sk-grid">GridSearchCV</a>
+        <a href="#sk-rand">RandomizedSearchCV</a>
+      </div>
+    </div>
+
+  </div><!-- /code-nav -->
 </nav>
 
 <!-- ══════════════════ MAIN CONTENT ══════════════════ -->
 <main id="main">
+
+<div class="banner">
+  <img src="mop-macaque.png" alt="logo">
+  <div>
+    <div style="margin-bottom:.55rem">This cheatsheet combines lecture materials from <a href="https://github.com/esokolov/ml-course-hse" target="_blank" rel="noopener">github.com/esokolov/ml-course-hse</a> with reference code for the data analysis exam. Theory covers probability, statistics, and ML concepts; Code covers NumPy, Pandas, Polars, and Scikit-learn.</div>
+    <div style="font-size:.8rem;color:#6b5030;line-height:1.8">
+      <strong style="color:#4a3520">Source lectures:</strong>
+      <a href="https://github.com/esokolov/ml-course-hse/blob/master/2019-fall/lecture-notes/lecture01-intro.pdf" target="_blank" rel="noopener">1&nbsp;Intro&nbsp;to&nbsp;ML</a> ·
+      <a href="https://github.com/esokolov/ml-course-hse/blob/master/2019-spring/lecture-notes/lecture21-knn.pdf" target="_blank" rel="noopener">2&nbsp;KNN</a> ·
+      <a href="https://github.com/esokolov/ml-course-hse/blob/master/2019-fall/lecture-notes/lecture02-linregr.pdf" target="_blank" rel="noopener">3&nbsp;Linear&nbsp;Regression</a> ·
+      <a href="https://github.com/esokolov/ml-course-hse/blob/master/2019-fall/lecture-notes/lecture03-linregr.pdf" target="_blank" rel="noopener">4&nbsp;Overfitting</a> ·
+      <a href="https://github.com/esokolov/ml-course-hse/blob/master/2019-fall/lecture-notes/lecture04-linclass.pdf" target="_blank" rel="noopener">5&nbsp;Logistic&nbsp;Regression&nbsp;&amp;&nbsp;Metrics</a> ·
+      <a href="https://github.com/esokolov/ml-course-hse/blob/master/2019-fall/lecture-notes/lecture05-linclass.pdf" target="_blank" rel="noopener">6&nbsp;Calibration&nbsp;&amp;&nbsp;SVM</a> ·
+      <a href="https://github.com/esokolov/ml-course-hse/blob/master/2019-fall/lecture-notes/lecture07-trees.pdf" target="_blank" rel="noopener">7&nbsp;Decision&nbsp;Trees</a> ·
+      <a href="https://github.com/esokolov/ml-course-hse/blob/master/2019-fall/lecture-notes/lecture08-ensembles.pdf" target="_blank" rel="noopener">8&nbsp;Bias&#8209;Variance</a> ·
+      <a href="https://github.com/esokolov/ml-course-hse/blob/master/2019-fall/lecture-notes/lecture09-ensembles.pdf" target="_blank" rel="noopener">9&nbsp;Gradient&nbsp;Boosting</a> ·
+      <a href="https://github.com/esokolov/ml-course-hse/blob/master/2019-fall/lecture-notes/lecture10-ensembles.pdf" target="_blank" rel="noopener">10&nbsp;Advanced&nbsp;Boosting</a>
+    </div>
+  </div>
+</div>
 
 <!-- ━━━━━━━━━━━━━━━━ MATH FOUNDATIONS ━━━━━━━━━━━━━━━━ -->
 <section class="section" id="math-foundations">
@@ -386,7 +477,7 @@
 
   <div class="card math anchor" id="math-probability">
     <h3>Probability Essentials</h3>
-    <p>Главные формулы для задач A-3 и B-5: условная вероятность, полная вероятность, Байес, включения-исключения, ожидание и дисперсия.</p>
+    <p>Core formulas for tasks A-3 and B-5: conditional probability, total probability, Bayes' theorem, inclusion-exclusion, expectation and variance.</p>
     <div class="formula-box">
       <p>$P(A|B)=\dfrac{P(A \cap B)}{P(B)}$</p>
       <p>$P(A \cap B)=P(A|B)P(B)=P(B|A)P(A)$</p>
@@ -419,7 +510,7 @@ print(round(p_fraud_given_pos, 4))
 
   <div class="card math anchor" id="math-linear-algebra">
     <h3>Linear Algebra for ML</h3>
-    <p>Нужно для A-5 и B-4: векторы, матрицы, нормы, скалярное произведение, матричное умножение, ранг, собственные значения и разложения.</p>
+    <p>Needed for A-5 and B-4: vectors, matrices, norms, dot product, matrix multiplication, rank, eigenvalues and decompositions.</p>
     <div class="formula-box">
       <p>Linear regression prediction: $\hat{y}=Xw+b$</p>
       <p>OLS normal equation: $w=(X^T X)^{-1}X^T y$ when $X^TX$ is invertible.</p>
@@ -453,7 +544,7 @@ U, S, Vt = np.linalg.svd(A)
 
   <div class="card stats anchor" id="stats-basics">
     <h3>Data, Variables, Center, Spread</h3>
-    <p>База для статистики и анализа набора данных: тип переменной определяет, какие графики, агрегаты и модели уместны.</p>
+    <p>Foundation for statistics and dataset analysis: variable type determines which charts, aggregates, and models are appropriate.</p>
     <table class="params">
       <tr><th>Topic</th><th>Key idea</th><th>Use in exam</th></tr>
       <tr><td>Population</td><td>All objects of interest.</td><td>Usually unknown, described through a sample.</td></tr>
@@ -481,7 +572,7 @@ proportions = df["category"].value_counts(normalize=True)
 
   <div class="card stats anchor" id="stats-distributions">
     <h3>Distributions, Density, CDF</h3>
-    <p>Для A-2 важно отличать плотность/PMF от функции распределения и понимать форму основных распределений.</p>
+    <p>For A-2 it is important to distinguish density/PMF from the cumulative distribution function and to understand the shape of common distributions.</p>
     <table class="params">
       <tr><th>Distribution</th><th>When used</th><th>Parameters / facts</th></tr>
       <tr><td>Bernoulli</td><td>One binary trial.</td><td>$P(X=1)=p$, $E[X]=p$, $Var(X)=p(1-p)$</td></tr>
@@ -512,7 +603,7 @@ print(stats.poisson.pmf(k=2, mu=1.5))
 
   <div class="card stats anchor" id="stats-visualization">
     <h3>Choosing and Interpreting Visualizations</h3>
-    <p>Вопросы A-1 проверяют выбор графика и интерпретацию box plot, violin plot, density plot, bubble chart и других базовых визуализаций.</p>
+    <p>Questions A-1 test chart selection and interpretation of box plots, violin plots, density plots, bubble charts, and other basic visualizations.</p>
     <table class="params">
       <tr><th>Goal</th><th>Best chart</th><th>What to inspect</th></tr>
       <tr><td>One numeric variable</td><td>Histogram, KDE/density, box plot, violin plot</td><td>Center, spread, skew, outliers, multimodality.</td></tr>
@@ -536,21 +627,30 @@ plt.show()
   </div>
 
   <div class="card stats anchor" id="stats-hypothesis">
-    <h3>Hypothesis Testing and Correlation</h3>
-    <p>Для A-4: знать термины проверки гипотез, типы ошибок, мощность критерия, уровень значимости и интерпретацию коэффициента корреляции.</p>
+    <h3>Hypothesis Testing, Type I/II Errors, and Correlation</h3>
+    <p>For A-4: know hypothesis testing terminology, error types, statistical power, significance level, and interpretation of the correlation coefficient.</p>
     <table class="params">
       <tr><th>Term</th><th>Meaning</th><th>Exam wording</th></tr>
       <tr><td>$H_0$</td><td>Null hypothesis, default/no effect.</td><td>What we try to reject.</td></tr>
       <tr><td>$H_1$</td><td>Alternative hypothesis.</td><td>Effect/difference exists.</td></tr>
-      <tr><td>$\alpha$</td><td>Significance level.</td><td>Allowed probability of Type I error.</td></tr>
-      <tr><td>p-value</td><td>Probability of data at least this extreme if $H_0$ is true.</td><td>If p-value &lt; alpha, reject $H_0$.</td></tr>
-      <tr><td>Type I error</td><td>Reject true $H_0$.</td><td>False positive.</td></tr>
-      <tr><td>Type II error</td><td>Do not reject false $H_0$.</td><td>False negative.</td></tr>
-      <tr><td>Power</td><td>$1-\beta$.</td><td>Probability to detect real effect.</td></tr>
+      <tr><td>$\alpha$</td><td>Significance level.</td><td>Allowed probability of Type I error (typically 0.05).</td></tr>
+      <tr><td>p-value</td><td>Probability of data at least this extreme if $H_0$ is true.</td><td>If p-value &lt; $\alpha$, reject $H_0$.</td></tr>
+      <tr><td>Type I error ($\alpha$)</td><td>Reject true $H_0$. False positive.</td><td>We declare an effect that does not exist. Controlled by $\alpha$.</td></tr>
+      <tr><td>Type II error ($\beta$)</td><td>Fail to reject false $H_0$. False negative.</td><td>We miss a real effect. Reduced by more data or larger effect.</td></tr>
+      <tr><td>Power ($1-\beta$)</td><td>Probability of correctly detecting a real effect.</td><td>Increases with sample size, effect size, or larger $\alpha$.</td></tr>
     </table>
     <div class="formula-box">
-      <p>Pearson correlation: $r=\dfrac{cov(X,Y)}{\sigma_X\sigma_Y}$, ranges from -1 to 1.</p>
-      <p>$r \approx 1$: strong positive linear relation. $r \approx -1$: strong negative linear relation. $r \approx 0$: no linear relation, but nonlinear relation may exist.</p>
+      <p><strong>Error types summary (decision table):</strong></p>
+      <p>$H_0$ is <em>true</em> + we reject → <strong>Type I error</strong> (false positive), rate = $\alpha$.</p>
+      <p>$H_0$ is <em>false</em> + we fail to reject → <strong>Type II error</strong> (false negative), rate = $\beta$.</p>
+      <p>$H_0$ is <em>false</em> + we reject → correct detection, probability = $1-\beta$ (power).</p>
+      <p>$H_0$ is <em>true</em> + we fail to reject → correct non-rejection, probability = $1-\alpha$.</p>
+      <p style="margin-top:.4rem">Trade-off: lowering $\alpha$ reduces Type I errors but increases $\beta$ (more Type II errors).</p>
+    </div>
+    <div class="formula-box">
+      <p>Pearson correlation: $r=\dfrac{cov(X,Y)}{\sigma_X\sigma_Y}$, ranges from $-1$ to $1$.</p>
+      <p>$r \approx 1$: strong positive linear relation. $r \approx -1$: strong negative. $r \approx 0$: no linear relation (but nonlinear may exist).</p>
+      <p>Spearman $\rho$: rank-based; detects any monotonic relationship, robust to outliers.</p>
     </div>
 <pre><code class="language-python">from scipy import stats
 
@@ -576,7 +676,7 @@ else:
 
   <div class="card theory anchor" id="ml-task-map">
     <h3>Task Types: Classification, Regression, Clustering</h3>
-    <p>Первый шаг почти любого вопроса по ML: определить тип задачи по целевой переменной и формату ответа.</p>
+    <p>The first step in almost any ML question: determine the task type from the target variable and the answer format.</p>
     <table class="params">
       <tr><th>Task</th><th>Target / output</th><th>Examples</th><th>Typical models</th></tr>
       <tr><td>Binary classification</td><td>Two classes or probability of class 1.</td><td>Fraud/not fraud, churn/no churn.</td><td>Logistic regression, SVC, tree, random forest.</td></tr>
@@ -606,7 +706,7 @@ else:
 
   <div class="card theory anchor" id="ml-overfit">
     <h3>Overfitting, Underfitting, Regularization</h3>
-    <p>Главная диагностика: сравнить train score и validation/test score. Большой разрыв почти всегда указывает на переобучение.</p>
+    <p>Main diagnostic: compare train score and validation/test score. A large gap almost always indicates overfitting.</p>
     <table class="params">
       <tr><th>Pattern</th><th>Diagnosis</th><th>Fix</th></tr>
       <tr><td>Train low, validation low</td><td>Underfitting / high bias.</td><td>More complex model, better features, less regularization.</td></tr>
@@ -635,7 +735,7 @@ print(val_scores.mean(axis=1))
 
   <div class="card theory anchor" id="ml-gradient">
     <h3>Linear Models and Gradient Descent</h3>
-    <p>Для A-11 и B-2: понимать, что линейная модель считает взвешенную сумму признаков, а градиентный спуск итеративно уменьшает функцию потерь.</p>
+    <p>For A-11 and B-2: understand that a linear model computes a weighted sum of features, and gradient descent iteratively minimizes the loss function.</p>
     <div class="formula-box">
       <p>Linear model: $\hat{y}=w_0+w_1x_1+\dots+w_px_p$</p>
       <p>Gradient descent update: $w := w-\eta \nabla_w L(w)$</p>
@@ -669,7 +769,7 @@ print(w, b)
 
   <div class="card theory anchor" id="ml-ensembles">
     <h3>Trees, Ensembles, Bias-Variance</h3>
-    <p>Для A-12, A-13 и B-3: деревья дают нелинейные правила, ансамбли объединяют много моделей, чтобы снизить variance или bias.</p>
+    <p>For A-12, A-13 and B-3: trees provide nonlinear decision rules; ensembles combine many models to reduce variance or bias.</p>
     <table class="params">
       <tr><th>Algorithm</th><th>Core idea</th><th>Strength</th><th>Risk</th></tr>
       <tr><td>Decision Tree</td><td>Recursive feature splits.</td><td>Interpretable, nonlinear, handles mixed feature scales.</td><td>Overfits deep trees.</td></tr>
@@ -686,7 +786,7 @@ print(w, b)
 
   <div class="card theory anchor" id="ml-text-image">
     <h3>Text and Image Basics</h3>
-    <p>Для A-8: знать базовые операции с текстом и изображениями, а также частотные признаки слов.</p>
+    <p>For A-8: know basic text and image operations and word frequency features.</p>
     <div class="quick-grid">
       <div class="quick-card">
         <h4>Text preprocessing</h4>
@@ -738,7 +838,7 @@ flat = img_float.reshape(-1)  # 64*64*3 features for classic ML
 
   <div class="card theory anchor" id="ml-deep-learning">
     <h3>Deep Learning: Layers and Activations</h3>
-    <p>Для A-15: понимать, какие слои и функции активации используются и какие свойства они имеют.</p>
+    <p>For A-15: understand which layers and activation functions are used and what properties they have.</p>
     <table class="params">
       <tr><th>Layer / activation</th><th>Purpose</th><th>Key property</th></tr>
       <tr><td>Dense / Linear</td><td>Fully connected transformation.</td><td>Computes $Wx+b$.</td></tr>
@@ -764,14 +864,14 @@ flat = img_float.reshape(-1)  # 64*64*3 features for classic ML
   </div>
 
   <div class="card theory">
-    <h3>Что добавлено из лекций 01-10</h3>
-    <p>Этот блок закрывает теоретические детали, которые часто спрашивают в коротких вопросах и задачах: постановка ML-задачи, линейные модели, регуляризация, margin/losses, kNN, деревья, случайные леса, бустинг, XGBoost и стекинг.</p>
-    <div class="note"><strong>Как пользоваться:</strong> перед экзаменом пробеги таблицы “Exam cue” и “Trap”. Если формула дана рядом с интерпретацией, обычно спрашивают не только вычисление, но и смысл.</div>
+    <h3>What is covered from lectures 01-10</h3>
+    <p>This block covers theoretical details that are frequently tested in short questions and problems: ML problem setup, linear models, regularization, margin/losses, kNN, decision trees, random forests, boosting, XGBoost, and stacking.</p>
+    <div class=”note”><strong>How to use:</strong> before the exam, review the “Exam cue” and “Trap” tables. When a formula appears alongside its interpretation, the question typically tests both the computation and the meaning.</div>
   </div>
 
   <div class="card theory anchor" id="lec-ml-pipeline">
     <h3>ML Setup &amp; Data-Analysis Pipeline</h3>
-    <p>Формальная постановка: есть пространство объектов $X$, пространство ответов $Y$, обучающая выборка $\mathcal{D}=\{(x_i,y_i)\}_{i=1}^{\ell}$ и модель $a:X\to Y$. Таблица “объекты-признаки” имеет размер $\ell \times d$: строки — объекты, столбцы — признаки.</p>
+    <p>Formal setup: there is an object space $X$, an answer space $Y$, a training set $\mathcal{D}=\{(x_i,y_i)\}_{i=1}^{\ell}$, and a model $a:X\to Y$. The feature matrix has size $\ell \times d$: rows are objects, columns are features.</p>
     <div class="formula-box">
       <p>Empirical risk / average loss: $Q(a,\mathcal{D})=\dfrac{1}{\ell}\sum_{i=1}^{\ell}L(y_i,a(x_i))$</p>
       <p>Regression with MSE: $Q(a,\mathcal{D})=\dfrac{1}{\ell}\sum_{i=1}^{\ell}(a(x_i)-y_i)^2$</p>
@@ -813,7 +913,7 @@ flat = img_float.reshape(-1)  # 64*64*3 features for classic ML
 
   <div class="card theory anchor" id="lec-linreg-deep">
     <h3>Linear Regression Deep Dive: Features, Metrics, Closed Form</h3>
-    <p>Линейная модель регрессии делает прогноз как взвешенную сумму признаков. Она быстрая, интерпретируемая и хорошо работает на больших данных, но требует правильного преобразования признаков.</p>
+    <p>A linear regression model predicts as a weighted sum of features. It is fast, interpretable, and works well on large datasets, but requires proper feature transformations.</p>
     <div class="formula-box">
       <p>Model: $a(x)=w_0+\langle w,x\rangle=w_0+\sum_{j=1}^{d}w_jx_j$</p>
       <p>OLS objective: $\dfrac{1}{\ell}\|Xw-y\|_2^2 \to \min_w$</p>
@@ -864,7 +964,7 @@ smape = np.mean(np.abs(y_true - y_pred) / ((np.abs(y_true) + np.abs(y_pred)) / 2
 
   <div class="card theory anchor" id="lec-optim-reg">
     <h3>Optimisation, Scaling, Regularisation, Validation</h3>
-    <p>Градиент указывает направление наискорейшего роста, антиградиент — направление наискорейшего убывания. Поэтому параметры обновляют по правилу $w^{(k)}=w^{(k-1)}-\eta_k\nabla Q(w^{(k-1)})$.</p>
+    <p>The gradient points in the direction of steepest ascent; the negative gradient points in the direction of steepest descent. Parameters are therefore updated by the rule $w^{(k)}=w^{(k-1)}-\eta_k\nabla Q(w^{(k-1)})$.</p>
     <table class="params">
       <tr><th>Method</th><th>Uses per step</th><th>Why it matters</th></tr>
       <tr><td>Batch GD</td><td>Full gradient over all objects.</td><td>Stable but expensive for large $\ell$.</td></tr>
@@ -918,7 +1018,7 @@ print(-search.best_score_, search.best_params_)
 
   <div class="card theory anchor" id="lec-linclass-svm">
     <h3>Linear Classification, Margins, Logistic Regression, SVM</h3>
-    <p>Линейный классификатор разделяет пространство гиперплоскостью. Для бинарных меток $y\in\{-1,+1\}$ используется отступ $M_i=y_i\langle w,x_i\rangle$: если $M_i&gt;0$, объект классифицирован верно; чем больше $|M_i|$, тем выше уверенность.</p>
+    <p>A linear classifier separates the space with a hyperplane. For binary labels $y\in\{-1,+1\}$ the margin is $M_i=y_i\langle w,x_i\rangle$: if $M_i&gt;0$ the object is correctly classified; the larger $|M_i|$, the higher the confidence.</p>
     <div class="formula-box">
       <p>Linear classifier: $a(x)=\operatorname{sign}(\langle w,x\rangle+w_0)$.</p>
       <p>Zero-one loss: $[M_i&lt;0]$ is hard to optimize directly.</p>
@@ -975,7 +1075,7 @@ rbf_svm = make_pipeline(
 
   <div class="card theory anchor" id="lec-ranking-metrics">
     <h3>Classification, Ranking Metrics, ROC/PR, Lift</h3>
-    <p>Accuracy может быть бесполезной на несбалансированных классах: если 95% объектов отрицательные, классификатор “всегда отрицательный” уже даст 95% accuracy. Поэтому нужно смотреть confusion matrix, precision, recall, F1, ROC-AUC, PR-AUC и бизнес-метрики.</p>
+    <p>Accuracy can be misleading on imbalanced classes: if 95% of objects are negative, an “always negative” classifier already achieves 95% accuracy. Always inspect the confusion matrix, precision, recall, F1, ROC-AUC, PR-AUC, and business metrics.</p>
     <div class="formula-box">
       <p>$precision=\dfrac{TP}{TP+FP}$, $recall=\dfrac{TP}{TP+FN}$, $F1=\dfrac{2PR}{P+R}$.</p>
       <p>$FPR=\dfrac{FP}{FP+TN}$, $TPR=\dfrac{TP}{TP+FN}=recall$.</p>
@@ -1022,7 +1122,7 @@ print(roc_auc, gini, ap, precision, recall, f1, lift)
 
   <div class="card theory anchor" id="lec-knn-distances">
     <h3>KNN, Kernel/Parzen Weights, Text Distances, Approximate Neighbours</h3>
-    <p>kNN не строит явную модель на обучении: он запоминает выборку и для нового объекта ищет ближайших соседей. Качество почти полностью зависит от функции расстояния и масштаба признаков.</p>
+    <p>KNN builds no explicit model during training: it memorizes the dataset and for a new object searches for the nearest neighbors. Quality depends almost entirely on the distance function and feature scaling.</p>
     <div class="formula-box">
       <p>Classification: $a(u)=\arg\max_{y\in Y}\sum_{i=1}^{k}[y^{(i)}_u=y]$.</p>
       <p>Weighted kNN / Parzen window: $a(u)=\arg\max_y\sum_{i=1}^{k}K\left(\dfrac{\rho(u,x^{(i)}_u)}{h}\right)[y^{(i)}_u=y]$.</p>
@@ -1078,7 +1178,7 @@ print(search.best_params_, search.best_score_)
 
   <div class="card theory anchor" id="lec-tree-theory">
     <h3>Decision Tree Theory: Splits, Impurity, Stopping, Missing Values</h3>
-    <p>Решающее дерево рекурсивно разбивает пространство признаков. Внутренняя вершина хранит предикат, обычно $[x_j&lt;t]$, а лист хранит прогноз: класс/вероятности для классификации или среднее/медиану для регрессии.</p>
+    <p>A decision tree recursively partitions the feature space. An internal node stores a predicate, typically $[x_j&lt;t]$, while a leaf stores the prediction: class probabilities for classification or the mean/median for regression.</p>
     <div class="formula-box">
       <p>Split gain: $Q(R_m,j,t)=H(R_m)-\dfrac{|R_l|}{|R_m|}H(R_l)-\dfrac{|R_r|}{|R_m|}H(R_r)$.</p>
       <p>Regression impurity with MSE: variance inside node.</p>
@@ -1107,7 +1207,7 @@ print(search.best_params_, search.best_score_)
 
   <div class="card theory anchor" id="lec-bagging-rf">
     <h3>Bagging, Random Forest, Bias-Variance, OOB</h3>
-    <p>Бэггинг строит много моделей независимо на bootstrap-подвыборках и усредняет их ответы. Он особенно полезен для нестабильных моделей с высоким variance, например глубоких деревьев.</p>
+    <p>Bagging trains many models independently on bootstrap samples and averages their predictions. It is especially useful for unstable high-variance models such as deep decision trees.</p>
     <div class="formula-box">
       <p>Bagging regression/class-score: $a_N(x)=\dfrac1N\sum_{n=1}^{N}b_n(x)$.</p>
       <p>Bias-variance idea for squared loss: expected error = noise + bias$^2$ + variance.</p>
@@ -1150,7 +1250,7 @@ print("Test F1:", f1_score(y_test, rf.predict(X_test), average="macro"))
 
   <div class="card theory anchor" id="lec-gb-xgb">
     <h3>Gradient Boosting, XGBoost, Stacking</h3>
-    <p>Бустинг строит композицию последовательно: каждая новая модель исправляет ошибки текущей композиции. Для MSE новая модель учится на остатках $y_i-a_{N-1}(x_i)$; для общего дифференцируемого loss — на антиградиентах по прогнозам.</p>
+    <p>Boosting builds a composition sequentially: each new model corrects the errors of the current ensemble. For MSE the new model fits residuals $y_i-a_{N-1}(x_i)$; for a general differentiable loss it fits the negative gradients with respect to the predictions.</p>
     <div class="formula-box">
       <p>Additive model: $a_N(x)=a_{N-1}(x)+\eta\gamma_N b_N(x)$.</p>
       <p>Pseudo-residual: $s_i^{(N)}=-\left.\dfrac{\partial L(y_i,z)}{\partial z}\right|_{z=a_{N-1}(x_i)}$.</p>
@@ -1353,6 +1453,42 @@ np.median(A, axis=1)    # [2.  5. ]       — per row
 # Percentiles (generalisation)
 np.percentile(arr, 25)          # Q1
 np.percentile(arr, [25, 50, 75])  # Q1, Q2, Q3
+</code></pre>
+  </div>
+
+  <!-- Correlation -->
+  <div class="card numpy anchor" id="np-correlation">
+    <h3>Correlation</h3>
+    <p><code>np.corrcoef</code> returns a Pearson correlation matrix; <code>np.cov</code> returns the covariance matrix. Both operate on rows (each row is one variable).</p>
+    <table class="params">
+      <tr><th>Function</th><th>Returns</th><th>Notes</th></tr>
+      <tr><td>np.corrcoef(x, y)</td><td>2×2 correlation matrix, $r$ is at [0,1] or [1,0]</td><td>Values in [-1, 1]</td></tr>
+      <tr><td>np.cov(x, y)</td><td>2×2 covariance matrix</td><td>Uses ddof=1 (unbiased) by default</td></tr>
+      <tr><td>np.corrcoef(X)</td><td>n×n matrix for n-row array</td><td>Each row is a variable</td></tr>
+    </table>
+<pre><code class="language-python">import numpy as np
+
+x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+y = np.array([2.1, 4.0, 2.9, 6.1, 4.8])
+
+# Pearson r between x and y
+corr_matrix = np.corrcoef(x, y)   # shape (2, 2)
+r = corr_matrix[0, 1]             # same as [1, 0]
+print(f"Pearson r = {r:.4f}")
+
+# Covariance
+cov_matrix = np.cov(x, y)         # shape (2, 2)
+cov_xy = cov_matrix[0, 1]
+print(f"Cov(x, y) = {cov_xy:.4f}")
+
+# Multiple variables: each row is one variable, shape (n_vars, n_samples)
+X = np.vstack([x, y, x + np.random.randn(5) * 0.5])
+R = np.corrcoef(X)   # 3×3 correlation matrix
+print(R)
+
+# Verify manually
+r_manual = np.cov(x, y)[0, 1] / (np.std(x, ddof=1) * np.std(y, ddof=1))
+print(f"Manual r = {r_manual:.4f}")   # matches np.corrcoef
 </code></pre>
   </div>
 
@@ -3025,6 +3161,13 @@ print(results_df[['params', 'mean_test_score']].head(10))
 </main>
 
 <script>
+// Collapsible nav sections
+function toggleNav(id, btn) {
+  const body = document.getElementById(id);
+  body.classList.toggle('closed');
+  btn.classList.toggle('closed');
+}
+
 // Syntax highlighting
 document.addEventListener('DOMContentLoaded', () => {
   hljs.highlightAll();
